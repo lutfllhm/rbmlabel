@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { materialPool, stoklabelPool, lpsPool } = require('../config/database');
+const { pool } = require('../config/database');
 
 const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -12,22 +12,7 @@ const authenticateToken = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-    // Get user from appropriate database based on app
-    let pool;
-    switch (decoded.app) {
-      case 'material':
-        pool = materialPool;
-        break;
-      case 'stoklabel':
-        pool = stoklabelPool;
-        break;
-      case 'lps':
-        pool = lpsPool;
-        break;
-      default:
-        return res.status(401).json({ error: 'Invalid app in token' });
-    }
-
+    // Get user from single database
     const [rows] = await pool.execute(
       'SELECT id, username, full_name, email, role FROM users WHERE id = ?',
       [decoded.userId]

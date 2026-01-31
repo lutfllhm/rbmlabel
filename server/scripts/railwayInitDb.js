@@ -187,6 +187,73 @@ async function railwayInitDb() {
     
     console.log('\n🎉 Railway database initialization completed successfully!');
     
+    // Create editor tables
+    console.log('\n📝 Creating editor tables...');
+    try {
+      // Create editor_documents table
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS editor_documents (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
+          title VARCHAR(255) NOT NULL,
+          content LONGTEXT,
+          format ENUM('json', 'xml', 'html', 'txt', 'markdown') DEFAULT 'txt',
+          is_public BOOLEAN DEFAULT FALSE,
+          file_size INT DEFAULT 0,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+          INDEX idx_user_id (user_id),
+          INDEX idx_created_at (created_at),
+          INDEX idx_is_public (is_public)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+      `);
+      console.log('   ✅ editor_documents table created');
+
+      // Create editor_history table
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS editor_history (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          document_id INT NOT NULL,
+          content LONGTEXT,
+          version INT NOT NULL,
+          file_size INT DEFAULT 0,
+          created_by INT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (document_id) REFERENCES editor_documents(id) ON DELETE CASCADE,
+          FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+          INDEX idx_document_id (document_id),
+          INDEX idx_version (document_id, version)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+      `);
+      console.log('   ✅ editor_history table created');
+
+      // Create editor_shares table
+      await connection.query(`
+        CREATE TABLE IF NOT EXISTS editor_shares (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          document_id INT NOT NULL,
+          shared_by INT NOT NULL,
+          shared_with INT,
+          share_token VARCHAR(64) UNIQUE,
+          permission ENUM('view', 'edit') DEFAULT 'view',
+          expires_at TIMESTAMP NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (document_id) REFERENCES editor_documents(id) ON DELETE CASCADE,
+          FOREIGN KEY (shared_by) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (shared_with) REFERENCES users(id) ON DELETE CASCADE,
+          INDEX idx_document_id (document_id),
+          INDEX idx_share_token (share_token)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+      `);
+      console.log('   ✅ editor_shares table created');
+      
+      console.log('✅ All editor tables created successfully');
+    } catch (editorError) {
+      console.error('⚠️  Could not create editor tables:', editorError.message);
+      // Don't throw - editor tables are optional
+    }
+    
     // Create default user - ALWAYS reset password
     console.log('\n👤 Creating/Resetting default admin user...');
     try {

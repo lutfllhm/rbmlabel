@@ -12,10 +12,6 @@
     "setup": "npm run install:all",
     "build": "node build.js",
     "start": "cd server && npm start",
-    "verify": "node verify-deployment.js",
-    "check-ready": "node check-deployment-ready.js",
-    "verify-deploy": "cd server && npm run verify-deploy",
-    "check-db": "cd server && npm run check-db",
     "init-db": "cd server && npm run init-db"
   },
   "keywords": ["rbm", "react", "express", "mysql", "tailwindcss"],

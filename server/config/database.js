@@ -1,31 +1,30 @@
 const mysql = require('mysql2/promise');
 
-// Check required environment variables (DB_PASSWORD can be empty for local dev)
-const requiredEnvVars = ['DB_HOST', 'DB_USER'];
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+// Support both Railway and local environment variables
+const DB_HOST = process.env.MYSQLHOST || process.env.DB_HOST || 'localhost';
+const DB_PORT = process.env.MYSQLPORT || process.env.DB_PORT || 3306;
+const DB_USER = process.env.MYSQLUSER || process.env.DB_USER || 'root';
+const DB_PASSWORD = process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || '';
+const DB_NAME = process.env.MYSQLDATABASE || process.env.DB_NAME || 'rbm_combined';
 
-if (missingVars.length > 0) {
-  console.error('❌ Missing required environment variables:', missingVars.join(', '));
-  console.error('Available env vars:', Object.keys(process.env).filter(k => k.startsWith('DB_')).join(', '));
-  process.exit(1);
-}
+// Check if we're on Railway
+const isRailway = !!process.env.RAILWAY_ENVIRONMENT;
 
 console.log('✅ Database credentials found');
-console.log('   Host:', process.env.DB_HOST);
-console.log('   User:', process.env.DB_USER);
-console.log('   Password:', process.env.DB_PASSWORD ? '***' : '(empty)');
-console.log('   Port:', process.env.DB_PORT || 3306);
-
-// Database name
-const dbName = process.env.DB_NAME || 'rbm_combined';
+console.log('   Environment:', isRailway ? 'Railway' : 'Local');
+console.log('   Host:', DB_HOST);
+console.log('   User:', DB_USER);
+console.log('   Password:', DB_PASSWORD ? '***' : '(empty)');
+console.log('   Port:', DB_PORT);
+console.log('   Database:', DB_NAME);
 
 // Single database connection pool
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD || '',
-  database: dbName,
+  host: DB_HOST,
+  port: parseInt(DB_PORT),
+  user: DB_USER,
+  password: DB_PASSWORD,
+  database: DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -39,24 +38,29 @@ const pool = mysql.createPool({
 const createInitialConnection = async () => {
   try {
     return await mysql.createConnection({
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT) || 3306,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD || '',
+      host: DB_HOST,
+      port: parseInt(DB_PORT),
+      user: DB_USER,
+      password: DB_PASSWORD,
       charset: 'utf8mb4',
       timezone: '+00:00'
     });
   } catch (error) {
     console.error('❌ Cannot connect to MySQL server');
-    console.error('   Make sure MySQL is running on', process.env.DB_HOST + ':' + (process.env.DB_PORT || 3306));
+    console.error('   Host:', DB_HOST + ':' + DB_PORT);
     console.error('   Error:', error.message);
     
-    if (error.code === 'ECONNREFUSED') {
-      console.error('\n💡 SOLUTION:');
+    if (!isRailway && error.code === 'ECONNREFUSED') {
+      console.error('\n💡 SOLUTION (Local):');
       console.error('   1. Start XAMPP Control Panel');
       console.error('   2. Click "Start" button for MySQL');
       console.error('   3. Wait until MySQL status shows "Running"');
       console.error('   4. Try running the server again\n');
+    } else if (isRailway) {
+      console.error('\n💡 SOLUTION (Railway):');
+      console.error('   1. Make sure MySQL service is added to your project');
+      console.error('   2. Check that environment variables are linked');
+      console.error('   3. Verify MySQL service is running\n');
     }
     
     throw error;
@@ -64,26 +68,34 @@ const createInitialConnection = async () => {
 };
 
 // Ensure database exists and has schema
-const ensureDatabaseExists = async (dbName) => {
+const ensureDatabaseExists = async () => {
   let connection;
   try {
     connection = await createInitialConnection();
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-    console.log(`✅ Database '${dbName}' ready`);
+    
+    // On Railway, database already exists, just check it
+    if (isRailway) {
+      console.log(`✅ Using Railway database '${DB_NAME}'`);
+      await connection.query(`USE \`${DB_NAME}\``);
+    } else {
+      // Local: create database if not exists
+      await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+      console.log(`✅ Database '${DB_NAME}' ready`);
+      await connection.query(`USE \`${DB_NAME}\``);
+    }
     
     // Check if database has tables
-    await connection.query(`USE \`${dbName}\``);
     const [tables] = await connection.query('SHOW TABLES');
     
     if (tables.length === 0) {
-      console.log(`⚠️  Database '${dbName}' is empty, needs schema import`);
+      console.log(`⚠️  Database '${DB_NAME}' is empty, needs schema import`);
       return false; // Needs schema import
     } else {
-      console.log(`✅ Database '${dbName}' has ${tables.length} tables`);
+      console.log(`✅ Database '${DB_NAME}' has ${tables.length} tables`);
       return true; // Already has schema
     }
   } catch (error) {
-    console.error(`❌ Error ensuring database '${dbName}':`, error.message);
+    console.error(`❌ Error ensuring database '${DB_NAME}':`, error.message);
     throw error;
   } finally {
     if (connection) await connection.end();
@@ -96,13 +108,19 @@ const initializeDatabase = async () => {
     console.log('🔄 Initializing database...');
     
     // Ensure database exists and check if it needs schema
-    const dbReady = await ensureDatabaseExists(dbName);
+    const dbReady = await ensureDatabaseExists();
 
     // If database is empty, run schema import
     if (!dbReady) {
-      console.log('🔄 Running schema import...');
-      const initDb = require('../scripts/initDatabase');
-      await initDb();
+      if (isRailway) {
+        console.log('🔄 Running Railway schema import...');
+        const railwayInitDb = require('../scripts/railwayInitDb');
+        await railwayInitDb();
+      } else {
+        console.log('🔄 Running local schema import...');
+        const initDb = require('../scripts/initDatabase');
+        await initDb();
+      }
     }
 
     // Test connection
