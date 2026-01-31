@@ -16,6 +16,7 @@
     "force-init-db": "node scripts/forceInitDatabase.js",
     "create-user": "node scripts/createDefaultUser.js",
     "create-admin": "node scripts/createAdminUser.js",
+    "reset-admin": "node scripts/resetAdminPassword.js",
     "update-admin-password": "node scripts/updateAdminPassword.js",
     "test-password": "node scripts/testPassword.js",
     "check-db": "node scripts/checkDatabase.js",

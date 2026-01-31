@@ -97,6 +97,61 @@ if (isDebugEnabled) {
     }
   });
   
+  // Reset admin password - ALWAYS works
+  router.post('/reset-admin-password', async (req, res, next) => {
+    try {
+      console.log('🔐 Resetting admin password...');
+      
+      // Check if admin exists
+      const [existing] = await pool.execute(
+        "SELECT id, username FROM users WHERE username = 'admin'"
+      );
+      
+      // Generate new password hash
+      const hashedPassword = await bcrypt.hash('iware123', 10);
+      console.log('🔐 New password hash:', hashedPassword.substring(0, 30) + '...');
+      
+      if (existing.length > 0) {
+        // Update existing admin
+        await pool.execute(
+          'UPDATE users SET password = ?, updated_at = NOW() WHERE username = ?',
+          [hashedPassword, 'admin']
+        );
+        console.log('✅ Admin password updated');
+      } else {
+        // Create new admin
+        await pool.execute(
+          `INSERT INTO users (username, password, full_name, email, role, created_at) 
+           VALUES (?, ?, ?, ?, ?, NOW())`,
+          ['admin', hashedPassword, 'Administrator', 'admin@rbm.com', 'admin']
+        );
+        console.log('✅ Admin user created');
+      }
+      
+      // Verify password
+      const [verify] = await pool.execute(
+        "SELECT password FROM users WHERE username = 'admin'"
+      );
+      
+      const isValid = await bcrypt.compare('iware123', verify[0].password);
+      console.log('🔍 Password verification:', isValid ? '✅ VALID' : '❌ INVALID');
+      
+      res.json({
+        success: true,
+        message: 'Admin password reset successfully',
+        verified: isValid,
+        credentials: {
+          username: 'admin',
+          password: 'iware123',
+          apps: ['material', 'stoklabel', 'lps']
+        }
+      });
+    } catch (error) {
+      console.error('❌ Reset password error:', error);
+      next(error);
+    }
+  });
+  
   console.log('🐛 Debug routes enabled at /api/debug/*');
 } else {
   // Disabled in production

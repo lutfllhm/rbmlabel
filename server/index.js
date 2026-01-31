@@ -68,14 +68,15 @@ app.use((req, res, next) => {
   next();
 });
 
+// CRITICAL: API Routes MUST be registered BEFORE static files
+// This ensures API endpoints are not overridden by static file serving
+console.log('📍 Registering API routes...');
+
 // Make io available to routes
 app.use((req, res, next) => {
   req.io = io;
   next();
 });
-
-// API Routes
-console.log('📍 Registering API routes...');
 app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/webhooks', webhookRoutes);
@@ -84,6 +85,10 @@ app.use('/api/material', authenticateToken, materialRoutes);
 app.use('/api/stoklabel', authenticateToken, stoklabelRoutes);
 app.use('/api/lps', authenticateToken, lpsRoutes);
 console.log('✅ API routes registered');
+console.log('   - POST /api/auth/login');
+console.log('   - GET  /api/auth/me');
+console.log('   - GET  /api/public/*');
+console.log('   - POST /api/debug/reset-admin-password');
 
 // Health check
 app.get('/api/health', async (req, res) => {
@@ -127,6 +132,15 @@ app.get('/api/test', (req, res) => {
   });
 });
 
+// Test auth endpoint specifically
+app.post('/api/test-login', (req, res) => {
+  res.json({
+    message: 'Auth endpoint is reachable!',
+    body: req.body,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // List all routes (debug)
 app.get('/api/routes', (req, res) => {
   const routes = [];
@@ -159,8 +173,14 @@ app.get('/api/routes', (req, res) => {
 if (process.env.NODE_ENV === 'production') {
   const frontendPath = path.join(__dirname, 'public');
   
-  // Serve static files
-  app.use(express.static(frontendPath));
+  // Serve static files ONLY for non-API requests
+  app.use((req, res, next) => {
+    // Skip static file serving for API routes
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    express.static(frontendPath)(req, res, next);
+  });
   
   // Handle React routing - return all NON-API requests to React app
   // This catch-all route must be LAST

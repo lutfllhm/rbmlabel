@@ -187,8 +187,8 @@ async function railwayInitDb() {
     
     console.log('\n🎉 Railway database initialization completed successfully!');
     
-    // Create default user
-    console.log('\n👤 Creating default admin user...');
+    // Create default user - ALWAYS reset password
+    console.log('\n👤 Creating/Resetting default admin user...');
     try {
       const bcrypt = require('bcryptjs');
       
@@ -197,35 +197,50 @@ async function railwayInitDb() {
         "SELECT * FROM users WHERE username = 'admin'"
       );
       
+      // Generate new password hash
+      const hashedPassword = await bcrypt.hash('iware123', 10);
+      console.log('🔐 Generated password hash:', hashedPassword.substring(0, 30) + '...');
+      
       if (existingAdmin.length === 0) {
-        const hashedPassword = await bcrypt.hash('iware123', 10);
+        // Create new admin
         await connection.query(
-          `INSERT INTO users (username, password, full_name, email, role) 
-           VALUES (?, ?, ?, ?, ?)`,
+          `INSERT INTO users (username, password, full_name, email, role, created_at) 
+           VALUES (?, ?, ?, ?, ?, NOW())`,
           ['admin', hashedPassword, 'Administrator', 'admin@rbm.com', 'admin']
         );
         console.log('✅ Default admin user created');
-        console.log('   Username: admin');
-        console.log('   Password: iware123');
       } else {
-        console.log('ℹ️  Admin user already exists');
+        // ALWAYS update password to ensure it's correct
+        console.log('🔄 Admin user exists, resetting password...');
+        await connection.query(
+          'UPDATE users SET password = ?, updated_at = NOW() WHERE username = ?',
+          [hashedPassword, 'admin']
+        );
+        console.log('✅ Admin password reset successfully');
+      }
+      
+      // Verify the password works
+      const [verifyAdmin] = await connection.query(
+        "SELECT * FROM users WHERE username = 'admin'"
+      );
+      
+      if (verifyAdmin.length > 0) {
+        const testPassword = await bcrypt.compare('iware123', verifyAdmin[0].password);
+        console.log('🔍 Password verification:', testPassword ? '✅ VALID' : '❌ INVALID');
         
-        // Verify password
-        const isValid = await bcrypt.compare('iware123', existingAdmin[0].password);
-        if (!isValid) {
-          console.log('⚠️  Updating admin password...');
-          const newHash = await bcrypt.hash('iware123', 10);
-          await connection.query(
-            'UPDATE users SET password = ? WHERE username = ?',
-            [newHash, 'admin']
-          );
-          console.log('✅ Admin password updated');
+        if (testPassword) {
+          console.log('\n📋 Login Credentials:');
+          console.log('   Username: admin');
+          console.log('   Password: iware123');
+          console.log('   Apps: material, stoklabel, lps');
         } else {
-          console.log('✅ Admin password is valid');
+          console.error('❌ WARNING: Password verification failed!');
         }
       }
     } catch (userError) {
-      console.error('⚠️  Could not create/verify admin user:', userError.message);
+      console.error('❌ Could not create/reset admin user:', userError.message);
+      console.error('Stack:', userError.stack);
+      throw userError; // Re-throw to fail the initialization
     }
     
   } catch (error) {
