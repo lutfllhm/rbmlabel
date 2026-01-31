@@ -253,13 +253,13 @@ const HomePage = () => {
             </div>
             
             {/* Stats Overview */}
-            {dashboardData && (
+            {dashboardData && dashboardData.stats && (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
                 {[
-                  { label: 'Total Materials', value: dashboardData.stats.material?.total_materials || 0, icon: Package },
-                  { label: 'Total SPK', value: dashboardData.stats.spk?.total_spk || 0, icon: FileText },
-                  { label: 'Label Stock', value: dashboardData.stats.label?.total_labels || 0, icon: Tags },
-                  { label: 'Total LPS', value: dashboardData.stats.lps?.total_lps || 0, icon: BarChart3 }
+                  { label: 'Total Materials', value: dashboardData.stats?.material?.total_materials || 0, icon: Package },
+                  { label: 'Total SPK', value: dashboardData.stats?.spk?.total_spk || 0, icon: FileText },
+                  { label: 'Label Stock', value: dashboardData.stats?.label?.total_labels || 0, icon: Tags },
+                  { label: 'Total LPS', value: dashboardData.stats?.lps?.total_lps || 0, icon: BarChart3 }
                 ].map((stat, index) => {
                   const Icon = stat.icon
                   return (
@@ -448,7 +448,7 @@ const HomePage = () => {
               Sistem Manajemen Produksi Modern untuk Efisiensi Maksimal
             </p>
             <div className="flex items-center justify-center space-x-6 text-sm text-slate-500 dark:text-slate-500 transition-colors duration-300">
-              <span>© 2024 RBM System</span>
+              <span>© 2025 RBM System</span>
               <span>•</span>
               <span>All Rights Reserved</span>
             </div>
