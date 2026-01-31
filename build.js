@@ -72,6 +72,28 @@ try {
   copyRecursive(distDir, publicDir);
   console.log('✅ Frontend build copied to server/public');
   
+  // Copy database folder to server for Railway deployment
+  console.log('\n📁 Copying database folder...');
+  const dbSourceDir = path.join(__dirname, 'database');
+  const dbDestDir = path.join(__dirname, 'server', 'database');
+  
+  if (fs.existsSync(dbSourceDir)) {
+    if (!fs.existsSync(dbDestDir)) {
+      fs.mkdirSync(dbDestDir, { recursive: true });
+    }
+    copyRecursive(dbSourceDir, dbDestDir);
+    console.log('✅ Database folder copied to server/database');
+    
+    // Verify SQL file
+    const sqlPath = path.join(dbDestDir, 'rbm_combined.sql');
+    if (fs.existsSync(sqlPath)) {
+      const sqlSize = fs.statSync(sqlPath).size;
+      console.log(`✅ rbm_combined.sql verified (${sqlSize} bytes)`);
+    }
+  } else {
+    console.log('⚠️  Database folder not found, skipping...');
+  }
+  
   // Verify critical files
   const indexPath = path.join(publicDir, 'index.html');
   if (fs.existsSync(indexPath)) {

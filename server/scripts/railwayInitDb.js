@@ -76,12 +76,12 @@ async function railwayInitDb() {
     console.log('\n🔍 Searching for SQL file...');
     const possiblePaths = [
       process.env.SQL_FILE_PATH,
-      path.join(__dirname, '../database/rbm_combined.sql'),
+      path.join(__dirname, '../database/rbm_combined.sql'), // server/database/rbm_combined.sql
+      '/app/server/database/rbm_combined.sql', // Railway absolute path
+      '/app/database/rbm_combined.sql', // Root database folder
       path.join(__dirname, '../../database/rbm_combined.sql'),
-      path.join(process.cwd(), 'database/rbm_combined.sql'),
-      path.join(process.cwd(), 'server/database/rbm_combined.sql'),
-      '/app/database/rbm_combined.sql',
-      '/app/server/database/rbm_combined.sql'
+      path.join(process.cwd(), '../database/rbm_combined.sql'),
+      path.join(process.cwd(), 'database/rbm_combined.sql')
     ].filter(Boolean);
     
     let sqlFile = null;
