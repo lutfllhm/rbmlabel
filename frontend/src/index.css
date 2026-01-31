@@ -112,6 +112,37 @@
   textarea,
   select {
     @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100 dark:placeholder:text-gray-500 dark:focus:ring-blue-400;
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+  
+  /* Ensure form groups are full width */
+  form > div,
+  form > fieldset,
+  .form-group {
+    @apply w-full;
+  }
+  
+  /* Form grid layouts */
+  .form-grid-1 {
+    @apply grid grid-cols-1 gap-4 w-full;
+  }
+  
+  .form-grid-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4 w-full;
+  }
+  
+  .form-grid-3 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full;
+  }
+  
+  .form-grid-4 {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full;
+  }
+  
+  /* Form actions */
+  .form-actions {
+    @apply flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700 mt-6;
   }
   
   /* Select dropdown arrow fix for dark mode */
