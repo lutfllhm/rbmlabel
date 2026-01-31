@@ -37,38 +37,41 @@ const Modal = ({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-50 overflow-y-auto animate-fade-in"
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
       
-      {/* Modal */}
-      <div 
-        className={`relative w-full ${sizes[size]} animate-slide-up`}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Card className="overflow-hidden">
-          {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {title}
-            </h2>
-            {showCloseButton && (
-              <button
-                onClick={onClose}
-                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            )}
-          </div>
-          
-          {/* Content */}
-          <div className="p-6 max-h-[calc(100vh-200px)] overflow-y-auto">
-            {children}
-          </div>
-        </Card>
+      {/* Modal Container - Centered with padding */}
+      <div className="flex min-h-full items-center justify-center p-4">
+        {/* Modal */}
+        <div 
+          className={`relative w-full ${sizes[size]} my-8 animate-slide-up`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Card className="overflow-hidden max-h-[90vh] flex flex-col">
+            {/* Header - Fixed */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex-shrink-0">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {title}
+              </h2>
+              {showCloseButton && (
+                <button
+                  onClick={onClose}
+                  className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              )}
+            </div>
+            
+            {/* Content - Scrollable */}
+            <div className="p-6 overflow-y-auto flex-1">
+              {children}
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   )
