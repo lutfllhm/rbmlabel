@@ -1,11 +1,12 @@
 import { forwardRef } from 'react'
+import { ChevronDown } from 'lucide-react'
 
-const Input = forwardRef(({ 
+const Select = forwardRef(({ 
   label,
   error,
   helperText,
-  leftIcon,
-  rightIcon,
+  options = [],
+  placeholder = 'Pilih...',
   className = '',
   containerClassName = '',
   ...props 
@@ -19,35 +20,41 @@ const Input = forwardRef(({
         </label>
       )}
       <div className="relative">
-        {leftIcon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500">
-            {leftIcon}
-          </div>
-        )}
-        <input
+        <select
           ref={ref}
           className={`
-            w-full px-4 py-2.5
-            ${leftIcon ? 'pl-10' : ''}
-            ${rightIcon ? 'pr-10' : ''}
+            w-full px-4 py-2.5 pr-10
             bg-white dark:bg-slate-800 
             border border-gray-300 dark:border-slate-600
             rounded-lg 
             text-gray-900 dark:text-white
-            placeholder-gray-400 dark:placeholder-slate-500
             focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent
             disabled:bg-gray-100 dark:disabled:bg-slate-900 disabled:cursor-not-allowed disabled:opacity-50
             transition-all duration-200
+            appearance-none cursor-pointer
             ${error ? 'border-red-500 focus:ring-red-500 dark:border-red-400 dark:focus:ring-red-400' : ''}
             ${className}
           `}
           {...props}
-        />
-        {rightIcon && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500">
-            {rightIcon}
-          </div>
-        )}
+        >
+          {placeholder && (
+            <option value="" disabled>
+              {placeholder}
+            </option>
+          )}
+          {options.map((option) => (
+            <option 
+              key={option.value} 
+              value={option.value}
+              className="bg-white dark:bg-slate-800 text-gray-900 dark:text-white"
+            >
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 dark:text-slate-500">
+          <ChevronDown className="h-5 w-5" />
+        </div>
       </div>
       {error && (
         <p className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center">
@@ -64,6 +71,6 @@ const Input = forwardRef(({
   )
 })
 
-Input.displayName = 'Input'
+Select.displayName = 'Select'
 
-export default Input
+export default Select
