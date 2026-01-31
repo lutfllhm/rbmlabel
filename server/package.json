@@ -1,0 +1,44 @@
+{
+  "name": "rbm-server",
+  "version": "1.0.0",
+  "description": "RBM System Backend - Express.js API",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "quick-start": "node scripts/quickStart.js",
+    "startup": "node scripts/startup.js",
+    "prepare": "node scripts/prepareBuild.js",
+    "deploy": "node scripts/deploy.js",
+    "migrate": "node scripts/migrate.js",
+    "init-db": "node scripts/initDatabase.js",
+    "railway-init-db": "node scripts/railwayInitDb.js",
+    "force-init-db": "node scripts/forceInitDatabase.js",
+    "create-user": "node scripts/createDefaultUser.js",
+    "check-db": "node scripts/checkDatabase.js",
+    "check-mysql": "node scripts/checkMySQL.js",
+    "check-users": "node scripts/checkUsers.js",
+    "test-login": "node scripts/testLogin.js",
+    "verify-deploy": "node scripts/verifyDeployment.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.5",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "joi": "^17.11.0",
+    "multer": "^1.4.5-lts.1",
+    "socket.io": "^4.7.4",
+    "dotenv": "^16.3.1",
+    "express-rate-limit": "^7.1.5",
+    "compression": "^1.7.4",
+    "morgan": "^1.10.0",
+    "uuid": "^9.0.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

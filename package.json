@@ -1,0 +1,31 @@
+{
+  "name": "rbm-system",
+  "version": "1.0.0",
+  "description": "RBM System - Modern React/Express Application",
+  "scripts": {
+    "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
+    "backend:dev": "cd server & npm run dev",
+    "frontend:dev": "cd frontend & npm run dev",
+    "backend:start": "cd server && npm start",
+    "frontend:build": "cd frontend && npm run build",
+    "install:all": "npm install && cd server && npm install && cd frontend && npm install",
+    "setup": "npm run install:all",
+    "build": "node build.js",
+    "start": "cd server && npm start",
+    "verify": "node verify-deployment.js",
+    "check-ready": "node check-deployment-ready.js",
+    "verify-deploy": "cd server && npm run verify-deploy",
+    "check-db": "cd server && npm run check-db",
+    "init-db": "cd server && npm run init-db"
+  },
+  "keywords": ["rbm", "react", "express", "mysql", "tailwindcss"],
+  "author": "RBM Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
