@@ -90,7 +90,7 @@ const HomePage = () => {
       icon: Package,
       gradient: 'from-indigo-500 via-indigo-600 to-blue-600',
       path: '/login?app=material',
-      stats: dashboardData?.stats?.material,
+      stats: dashboardData?.stats?.material || {},
       features: ['Real-time Stock Monitoring', 'Automated SPK Generation', 'Smart Analytics & Reports']
     },
     {
@@ -99,7 +99,7 @@ const HomePage = () => {
       icon: Tags,
       gradient: 'from-emerald-500 via-green-600 to-teal-600',
       path: '/login?app=stoklabel',
-      stats: dashboardData?.stats?.label,
+      stats: dashboardData?.stats?.label || {},
       features: ['Label Tracking System', 'Digital Surat Jalan', 'Inventory Control']
     },
     {
@@ -108,7 +108,7 @@ const HomePage = () => {
       icon: FileText,
       gradient: 'from-violet-500 via-purple-600 to-fuchsia-600',
       path: '/login?app=lps',
-      stats: dashboardData?.stats?.lps,
+      stats: dashboardData?.stats?.lps || {},
       features: ['Production Logging', 'Quality Verification', 'Performance Analytics']
     }
   ]
