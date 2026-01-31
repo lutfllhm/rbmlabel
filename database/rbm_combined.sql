@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert default admin user (password: iware123)
+-- Insert default admin user (password: admin123)
 INSERT INTO users (username, password, full_name, email, role) VALUES
-('admin', '$2a$10$1FpPzTZ11zfjcV4lQEj3N.PU2hZH0nvLwITZ9yDyUiCs.XS2iyBGy', 'Administrator', 'admin@rbm.com', 'admin');
+('admin', '$2a$10$o68kQbKRt/C6ELjFAMSM9u5R04Jr9TmawmvOv3Bfyijgs1JRwmeLO', 'Administrator', 'admin@rbm.com', 'admin');
 
 -- ============================================
 -- LPS MODULE TABLES

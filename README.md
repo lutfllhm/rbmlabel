@@ -60,18 +60,86 @@ rbm-system/
 
 ## 🔧 Development
 
+### Prerequisites
+- Node.js 18.x atau lebih tinggi
+- MySQL 5.7+ atau MariaDB
+- XAMPP (untuk Windows) atau MySQL server
+
+### Setup Local Development
+
+1. **Clone repository**
 ```bash
-# Install semua dependencies
+git clone <repository-url>
+cd rbm-system
+```
+
+2. **Install dependencies**
+```bash
 npm run setup
+# atau
+npm run install:all
+```
 
-# Run development
+3. **Setup database**
+   - Start MySQL server (XAMPP untuk Windows)
+   - Buat file `.env` di folder `server/`:
+   
+```env
+# Server Configuration
+PORT=5000
+NODE_ENV=development
+
+# Database Configuration
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=rbm_combined
+
+# JWT Configuration
+JWT_SECRET=rbm-secret-key-development-2024
+JWT_EXPIRE=7d
+
+# CORS Configuration
+CORS_ORIGIN=http://localhost:5173
+```
+
+4. **Buat file `.env` di folder `frontend/`:**
+```env
+VITE_API_URL=http://localhost:5000/api
+VITE_APP_NAME=RBM System
+VITE_NODE_ENV=development
+```
+
+5. **Initialize database**
+```bash
+npm run init-db
+```
+
+6. **Run development server**
+```bash
 npm run dev
+```
 
-# Build untuk production
-npm run build
+Server akan berjalan di:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:5000
 
-# Start production server
-npm start
+### Available Scripts
+
+```bash
+# Development
+npm run dev              # Run server & frontend bersamaan
+npm run backend:dev      # Run server saja
+npm run frontend:dev     # Run frontend saja
+
+# Database
+npm run init-db          # Initialize database
+npm run check-db         # Check database status
+npm run update-admin-password  # Update password admin ke admin123
+
+# Production
+npm run build            # Build frontend
+npm start                # Start production server
 ```
 
 ## 🗄️ Database
@@ -79,6 +147,14 @@ npm start
 - **Single Database**: `rbm_combined`
 - **Auto-initialization**: Schema dibuat otomatis dari `database/rbm_combined.sql`
 - **Modules**: Material, Stoklabel, LPS dalam satu database
+
+### Default Login Credentials
+```
+Username: admin
+Password: admin123
+```
+
+**⚠️ PENTING**: Ganti password setelah login pertama kali!
 
 ## 🌐 Features
 

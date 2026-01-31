@@ -57,9 +57,9 @@ async function createDefaultUser() {
       console.log('   Role:', existingUsers[0].role);
       
       // Verify password hash
-      const testPassword = 'iware123';
+      const testPassword = 'admin123';
       const isValid = await bcrypt.compare(testPassword, existingUsers[0].password);
-      console.log('   Password (iware123):', isValid ? '✅ Valid' : '❌ Invalid');
+      console.log('   Password (admin123):', isValid ? '✅ Valid' : '❌ Invalid');
       
       if (!isValid) {
         console.log('\n⚠️  Password hash is invalid! Updating...');
@@ -76,7 +76,7 @@ async function createDefaultUser() {
     
     // Create admin user
     console.log('\n🔄 Creating admin user...');
-    const password = 'iware123';
+    const password = 'admin123';
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const [result] = await connection.query(
@@ -88,7 +88,7 @@ async function createDefaultUser() {
     console.log('✅ Admin user created successfully!');
     console.log('📋 Login credentials:');
     console.log('   Username: admin');
-    console.log('   Password: iware123');
+    console.log('   Password: admin123');
     console.log('   User ID:', result.insertId);
     
     // Verify creation

@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   base: '/', // Ensure assets are loaded from root
   server: {
-    port: 3000,
+    port: 5173,
     proxy: {
       '/api': {
         target: 'http://localhost:5000',
