@@ -2,11 +2,14 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 
 // Use environment variable for API URL
-// In production, VITE_API_URL MUST be set to backend service URL
-const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+// In production (Railway), use relative path /api
+// In development, use localhost
+const isDevelopment = import.meta.env.MODE === 'development'
+const baseURL = import.meta.env.VITE_API_URL || (isDevelopment ? 'http://localhost:5000/api' : '/api')
 
 console.log('API Base URL:', baseURL)
 console.log('Environment:', import.meta.env.MODE)
+console.log('Is Development:', isDevelopment)
 
 const api = axios.create({
   baseURL,
