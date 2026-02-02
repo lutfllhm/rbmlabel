@@ -118,6 +118,22 @@ const MaterialStock = () => {
     return matchesSearch && matchesCategory
   })
 
+  // Hitung total roll untuk material yang sama (nama dan kategori sama)
+  const calculateTotalRoll = (material) => {
+    return materials
+      .filter(m => 
+        m.nama_material === material.nama_material && 
+        m.kategori_id === material.kategori_id
+      )
+      .reduce((total, m) => total + parseFloat(m.jumlah_roll || 0), 0)
+  }
+
+  // Format angka tanpa desimal jika bulat, atau dengan desimal jika ada
+  const formatNumber = (num) => {
+    const number = parseFloat(num)
+    return number % 1 === 0 ? Math.floor(number) : number.toFixed(2).replace(/\.?0+$/, '')
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -202,6 +218,9 @@ const MaterialStock = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                   Stok
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                  Total Roll
+                </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                   Aksi
                 </th>
@@ -241,10 +260,18 @@ const MaterialStock = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {material.jumlah_roll} Roll
+                      {formatNumber(material.jumlah_roll)} Roll
                     </div>
                     <div className="text-sm text-gray-500 dark:text-slate-400">
-                      {material.jumlah_meter} Meter
+                      {formatNumber(material.jumlah_meter)} Meter
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-bold text-material-600 dark:text-material-400">
+                      {formatNumber(calculateTotalRoll(material))} Roll
+                    </div>
+                    <div className="text-xs text-gray-500 dark:text-slate-400">
+                      Total {material.nama_material}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -369,7 +396,7 @@ const MaterialStock = () => {
                 <Input
                   label="Jumlah Roll"
                   type="number"
-                  step="0.01"
+                  min="1"
                   required
                   value={formData.jumlah_roll}
                   onChange={(e) => setFormData({...formData, jumlah_roll: e.target.value})}
