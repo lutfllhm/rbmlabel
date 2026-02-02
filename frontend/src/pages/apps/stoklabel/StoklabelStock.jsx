@@ -269,36 +269,54 @@ const StoklabelStock = () => {
       {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                {editingStock ? 'Edit Stock' : 'Tambah Stock'}
-              </h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {editingStock ? 'Edit Stock' : 'Tambah Stock Baru'}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowAddModal(false)
+                    setEditingStock(null)
+                  }}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  label="Part Number"
-                  type="text"
-                  required
-                  value={formData.part_number}
-                  onChange={(e) => setFormData({...formData, part_number: e.target.value})}
-                />
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <Input
+                    label="Part Number"
+                    type="text"
+                    required
+                    value={formData.part_number}
+                    onChange={(e) => setFormData({...formData, part_number: e.target.value})}
+                    placeholder="Masukkan part number"
+                  />
+                  
+                  <Input
+                    label="Nama Item"
+                    type="text"
+                    required
+                    value={formData.nama_item}
+                    onChange={(e) => setFormData({...formData, nama_item: e.target.value})}
+                    placeholder="Masukkan nama item"
+                  />
+                </div>
                 
-                <Input
-                  label="Nama Item"
-                  type="text"
-                  required
-                  value={formData.nama_item}
-                  onChange={(e) => setFormData({...formData, nama_item: e.target.value})}
-                />
-                
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <Input
                     label="Ukuran"
                     type="text"
                     required
                     value={formData.ukuran}
                     onChange={(e) => setFormData({...formData, ukuran: e.target.value})}
+                    placeholder="Contoh: 100x200 mm"
                   />
                   
                   <Input
@@ -307,16 +325,19 @@ const StoklabelStock = () => {
                     required
                     value={formData.finishing}
                     onChange={(e) => setFormData({...formData, finishing: e.target.value})}
+                    placeholder="Jenis finishing"
                   />
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <Input
                     label="Isi"
                     type="number"
                     required
                     value={formData.isi}
                     onChange={(e) => setFormData({...formData, isi: e.target.value})}
+                    placeholder="0"
+                    helperText="Jumlah isi per roll"
                   />
                   
                   <Input
@@ -326,10 +347,12 @@ const StoklabelStock = () => {
                     required
                     value={formData.jumlah_roll}
                     onChange={(e) => setFormData({...formData, jumlah_roll: e.target.value})}
+                    placeholder="0"
+                    helperText="Jumlah roll tersedia"
                   />
                 </div>
                 
-                <div className="flex justify-end space-x-3 pt-4">
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
                   <Button
                     type="button"
                     app="stoklabel"

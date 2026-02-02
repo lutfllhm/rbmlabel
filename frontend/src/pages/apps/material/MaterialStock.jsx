@@ -280,71 +280,91 @@ const MaterialStock = () => {
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                {editingMaterial ? 'Edit Material' : 'Tambah Material'}
-              </h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {editingMaterial ? 'Edit Material' : 'Tambah Material Baru'}
+                </h3>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  label="No PO"
-                  type="text"
-                  required
-                  value={formData.no_po}
-                  onChange={(e) => setFormData({...formData, no_po: e.target.value})}
-                />
-
-                <Input
-                  label="Tanggal"
-                  type="date"
-                  required
-                  value={formData.tanggal}
-                  onChange={(e) => setFormData({...formData, tanggal: e.target.value})}
-                />
-
-                <Input
-                  label="Nama Material"
-                  type="text"
-                  required
-                  value={formData.nama_material}
-                  onChange={(e) => setFormData({...formData, nama_material: e.target.value})}
-                />
-
-                <Input
-                  label="Ukuran"
-                  type="text"
-                  required
-                  value={formData.ukuran}
-                  onChange={(e) => setFormData({...formData, ukuran: e.target.value})}
-                />
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
-                    Kategori
-                  </label>
-                  <select
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <Input
+                    label="No PO"
+                    type="text"
                     required
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200"
-                    value={formData.kategori_id}
-                    onChange={(e) => setFormData({...formData, kategori_id: e.target.value})}
-                  >
-                    <option value="">Pilih Kategori</option>
-                    {categories.map(category => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
+                    value={formData.no_po}
+                    onChange={(e) => setFormData({...formData, no_po: e.target.value})}
+                    placeholder="Masukkan nomor PO"
+                  />
+
+                  <Input
+                    label="Tanggal"
+                    type="date"
+                    required
+                    value={formData.tanggal}
+                    onChange={(e) => setFormData({...formData, tanggal: e.target.value})}
+                  />
                 </div>
 
-                <Input
-                  label="Supplier"
-                  type="text"
-                  required
-                  value={formData.supplier}
-                  onChange={(e) => setFormData({...formData, supplier: e.target.value})}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <Input
+                    label="Nama Material"
+                    type="text"
+                    required
+                    value={formData.nama_material}
+                    onChange={(e) => setFormData({...formData, nama_material: e.target.value})}
+                    placeholder="Masukkan nama material"
+                  />
+
+                  <Input
+                    label="Ukuran"
+                    type="text"
+                    required
+                    value={formData.ukuran}
+                    onChange={(e) => setFormData({...formData, ukuran: e.target.value})}
+                    placeholder="Contoh: 100x200 cm"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                      Kategori <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      required
+                      className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
+                      value={formData.kategori_id}
+                      onChange={(e) => setFormData({...formData, kategori_id: e.target.value})}
+                    >
+                      <option value="">Pilih Kategori</option>
+                      {categories.map(category => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <Input
+                    label="Supplier"
+                    type="text"
+                    required
+                    value={formData.supplier}
+                    onChange={(e) => setFormData({...formData, supplier: e.target.value})}
+                    placeholder="Nama supplier"
+                  />
+                </div>
 
                 <Input
                   label="Jumlah Roll"
@@ -353,9 +373,11 @@ const MaterialStock = () => {
                   required
                   value={formData.jumlah_roll}
                   onChange={(e) => setFormData({...formData, jumlah_roll: e.target.value})}
+                  placeholder="0"
+                  helperText="Masukkan jumlah dalam satuan roll"
                 />
 
-                <div className="flex justify-end space-x-3 pt-4">
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
                   <Button
                     type="button"
                     app="material"
@@ -365,7 +387,7 @@ const MaterialStock = () => {
                     Batal
                   </Button>
                   <Button type="submit" app="material" variant="primary">
-                    {editingMaterial ? 'Update' : 'Tambah'} Material
+                    {editingMaterial ? 'Update Material' : 'Tambah Material'}
                   </Button>
                 </div>
               </form>

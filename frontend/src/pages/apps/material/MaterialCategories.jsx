@@ -121,20 +121,32 @@ const MaterialCategories = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                {editingCategory ? 'Edit Kategori' : 'Tambah Kategori'}
-              </h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {editingCategory ? 'Edit Kategori' : 'Tambah Kategori Baru'}
+                </h3>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <Input
                   label="Nama Kategori"
                   type="text"
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  placeholder="Masukkan nama kategori"
+                  helperText="Nama kategori harus unik dan deskriptif"
                 />
 
-                <div className="flex justify-end space-x-3 pt-4">
+                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
                   <Button
                     type="button"
                     app="material"
@@ -144,7 +156,7 @@ const MaterialCategories = () => {
                     Batal
                   </Button>
                   <Button type="submit" app="material" variant="primary">
-                    {editingCategory ? 'Update' : 'Tambah'} Kategori
+                    {editingCategory ? 'Update Kategori' : 'Tambah Kategori'}
                   </Button>
                 </div>
               </form>
