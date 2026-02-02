@@ -391,39 +391,6 @@ const LpsUsers = () => {
           </div>
         </div>
       )}
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6">
-            <div className="flex items-center mb-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" />
-              </div>
-              <h3 className="ml-3 text-lg font-medium text-gray-900 dark:text-white">
-                Hapus Pengguna
-              </h3>
-            </div>
-            <p className="text-sm text-gray-500 dark:text-slate-400 mb-6">
-              Apakah Anda yakin ingin menghapus pengguna <strong className="text-gray-900 dark:text-white">{selectedUser?.username}</strong>? 
-              Tindakan ini tidak dapat dibatalkan.
-            </p>
-            <div className="flex justify-end space-x-3">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowDeleteModal(false)
-                  setSelectedUser(null)
-                }}
-              >
-                Batal
-              </Button>
-              <Button
-                variant="danger"
-                onClick={handleDelete}
-              >
-                Hapus
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
