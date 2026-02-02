@@ -185,86 +185,104 @@ const LpsFinish = () => {
       {/* Finish Modal */}
       {showFinishModal && selectedLps && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
-            <div className="mt-3">
-              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 mx-auto">
-                <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mr-4">
+                  <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Selesaikan LPS
+                </h3>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mt-2 text-center">
-                Selesaikan LPS
-              </h3>
+              <button
+                onClick={() => {
+                  setShowFinishModal(false)
+                  setSelectedLps(null)
+                  setFinishData({
+                    tanggal_finish: new Date().toISOString().split('T')[0],
+                    keterangan: '',
+                    finished_by: ''
+                  })
+                }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
               
-              <div className="mt-4 space-y-4">
-                <div className="bg-gray-50 dark:bg-slate-900/50 p-3 rounded-lg border border-gray-200 dark:border-slate-700">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">No LPS: {selectedLps.no_lps}</p>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Item: {selectedLps.nama_item}</p>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Customer: {selectedLps.customer}</p>
-                  <p className="text-sm text-gray-600 dark:text-slate-400">Jumlah: {selectedLps.jumlah_pcs?.toLocaleString()} PCS</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
-                    Tanggal Selesai <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={finishData.tanggal_finish}
-                    onChange={(e) => setFinishData(prev => ({ ...prev, tanggal_finish: e.target.value }))}
-                    className="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-md px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-lps-500 dark:focus:ring-lps-400 focus:border-transparent transition-all duration-200"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
-                    Diselesaikan oleh <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={finishData.finished_by}
-                    onChange={(e) => setFinishData(prev => ({ ...prev, finished_by: e.target.value }))}
-                    placeholder="Nama petugas"
-                    className="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-md px-3 py-2 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-lps-500 dark:focus:ring-lps-400 focus:border-transparent transition-all duration-200"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">
-                    Keterangan
-                  </label>
-                  <textarea
-                    value={finishData.keterangan}
-                    onChange={(e) => setFinishData(prev => ({ ...prev, keterangan: e.target.value }))}
-                    placeholder="Keterangan tambahan (opsional)"
-                    rows={3}
-                    className="w-full bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-md px-3 py-2 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-lps-500 dark:focus:ring-lps-400 focus:border-transparent transition-all duration-200"
-                  />
+            <div className="space-y-5">
+              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-lg border border-green-200 dark:border-green-800">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">Detail LPS:</p>
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-700 dark:text-slate-300"><span className="font-medium">No LPS:</span> {selectedLps.no_lps}</p>
+                  <p className="text-sm text-gray-700 dark:text-slate-300"><span className="font-medium">Item:</span> {selectedLps.nama_item}</p>
+                  <p className="text-sm text-gray-700 dark:text-slate-300"><span className="font-medium">Customer:</span> {selectedLps.customer}</p>
+                  <p className="text-sm text-gray-700 dark:text-slate-300"><span className="font-medium">Jumlah:</span> {selectedLps.jumlah_pcs?.toLocaleString()} PCS</p>
                 </div>
               </div>
 
-              <div className="flex gap-4 mt-6">
-                <button
-                  onClick={() => {
-                    setShowFinishModal(false)
-                    setSelectedLps(null)
-                    setFinishData({
-                      tanggal_finish: new Date().toISOString().split('T')[0],
-                      keterangan: '',
-                      finished_by: ''
-                    })
-                  }}
-                  className="flex-1 px-4 py-2 bg-gray-300 dark:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-md hover:bg-gray-400 dark:hover:bg-slate-600 transition-colors"
-                >
-                  Batal
-                </button>
-                <button
-                  onClick={handleFinish}
-                  className="flex-1 px-4 py-2 bg-green-600 dark:bg-green-700 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-600 transition-colors"
-                >
-                  Selesaikan
-                </button>
+              <Input
+                label="Tanggal Selesai"
+                type="date"
+                required
+                value={finishData.tanggal_finish}
+                onChange={(e) => setFinishData(prev => ({ ...prev, tanggal_finish: e.target.value }))}
+              />
+
+              <Input
+                label="Diselesaikan oleh"
+                type="text"
+                required
+                value={finishData.finished_by}
+                onChange={(e) => setFinishData(prev => ({ ...prev, finished_by: e.target.value }))}
+                placeholder="Nama petugas"
+                helperText="Masukkan nama petugas yang menyelesaikan"
+              />
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                  Keterangan
+                </label>
+                <textarea
+                  value={finishData.keterangan}
+                  onChange={(e) => setFinishData(prev => ({ ...prev, keterangan: e.target.value }))}
+                  placeholder="Tambahkan keterangan jika diperlukan"
+                  rows={3}
+                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-lps-500 dark:focus:ring-lps-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
+                />
               </div>
+            </div>
+
+            <div className="flex gap-3 mt-6 pt-6 border-t border-gray-200 dark:border-slate-700">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  setShowFinishModal(false)
+                  setSelectedLps(null)
+                  setFinishData({
+                    tanggal_finish: new Date().toISOString().split('T')[0],
+                    keterangan: '',
+                    finished_by: ''
+                  })
+                }}
+                className="flex-1"
+              >
+                Batal
+              </Button>
+              <Button
+                type="button"
+                app="lps"
+                variant="primary"
+                onClick={handleFinish}
+                className="flex-1"
+              >
+                <CheckCircle className="w-4 h-4 mr-2 inline" />
+                Selesaikan LPS
+              </Button>
             </div>
           </div>
         </div>
