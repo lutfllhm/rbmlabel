@@ -290,13 +290,26 @@ const StoklabelKeluar = () => {
       {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <Card className="max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-                {editingItem ? 'Edit Label Keluar' : 'Tambah Label Keluar'}
-              </h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {editingItem ? 'Edit Label Keluar' : 'Tambah Label Keluar Baru'}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowAddModal(false)
+                    setEditingItem(null)
+                  }}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <Input
                   label="Tanggal"
                   type="date"
@@ -307,12 +320,12 @@ const StoklabelKeluar = () => {
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
-                    Part Number
+                    Part Number <span className="text-red-500">*</span>
                   </label>
                   <select
                     value={formData.part_number}
                     onChange={(e) => handlePartNumberChange(e.target.value)}
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-stoklabel-500 dark:focus:ring-stoklabel-400 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-stoklabel-500 dark:focus:ring-stoklabel-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
                     required
                   >
                     <option value="">Pilih Part Number</option>
@@ -322,6 +335,7 @@ const StoklabelKeluar = () => {
                       </option>
                     ))}
                   </select>
+                  <p className="mt-1.5 text-sm text-gray-500 dark:text-slate-400">Pilih dari stok yang tersedia</p>
                 </div>
                 
                 <Input
@@ -331,14 +345,16 @@ const StoklabelKeluar = () => {
                   value={formData.nama_item}
                   onChange={(e) => setFormData({...formData, nama_item: e.target.value})}
                   readOnly={!!formData.part_number}
+                  helperText={formData.part_number ? "Otomatis terisi dari part number" : ""}
                 />
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <Input
                     label="Customer"
                     type="text"
                     value={formData.customer}
                     onChange={(e) => setFormData({...formData, customer: e.target.value})}
+                    placeholder="Nama customer"
                   />
                   
                   <Input
@@ -347,6 +363,7 @@ const StoklabelKeluar = () => {
                     required
                     value={formData.jumlah}
                     onChange={(e) => setFormData({...formData, jumlah: e.target.value})}
+                    placeholder="Contoh: 100 pcs"
                   />
                 </div>
                 
@@ -357,7 +374,9 @@ const StoklabelKeluar = () => {
                   <textarea
                     value={formData.keterangan}
                     onChange={(e) => setFormData({...formData, keterangan: e.target.value})}
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-stoklabel-500 dark:focus:ring-stoklabel-400 focus:border-transparent transition-all duration-200"
+                    rows={3}
+                    placeholder="Tambahkan keterangan jika diperlukan"
+                    className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-stoklabel-500 dark:focus:ring-stoklabel-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
                     rows="3"
                     placeholder="Catatan opsional..."
                   />

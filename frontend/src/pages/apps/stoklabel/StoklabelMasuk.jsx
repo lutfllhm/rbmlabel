@@ -264,14 +264,28 @@ const StoklabelMasuk = () => {
       {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <Card className="max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
-              {editingItem ? 'Edit Label Masuk' : 'Tambah Label Masuk'}
-            </h3>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {editingItem ? 'Edit Label Masuk' : 'Tambah Label Masuk Baru'}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowAddModal(false)
+                    setEditingItem(null)
+                    resetForm()
+                  }}
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Input
                   label="Tanggal"
                   type="date"
@@ -286,50 +300,59 @@ const StoklabelMasuk = () => {
                   required
                   value={formData.no_spk}
                   onChange={(e) => setFormData({...formData, no_spk: e.target.value})}
+                  placeholder="Masukkan nomor SPK"
                 />
               </div>
               
               <Input
-                label="No LPS (Opsional)"
+                label="No LPS"
                 type="text"
                 value={formData.no_lps}
                 onChange={(e) => setFormData({...formData, no_lps: e.target.value})}
+                placeholder="Opsional"
+                helperText="Nomor LPS jika tersedia"
               />
               
-              <Input
-                label="Part Number"
-                type="text"
-                required
-                value={formData.part_number}
-                onChange={(e) => setFormData({...formData, part_number: e.target.value})}
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <Input
+                  label="Part Number"
+                  type="text"
+                  required
+                  value={formData.part_number}
+                  onChange={(e) => setFormData({...formData, part_number: e.target.value})}
+                  placeholder="Masukkan part number"
+                />
+                
+                <Input
+                  label="Nama Item"
+                  type="text"
+                  required
+                  value={formData.nama_item}
+                  onChange={(e) => setFormData({...formData, nama_item: e.target.value})}
+                  placeholder="Masukkan nama item"
+                />
+              </div>
               
-              <Input
-                label="Nama Item"
-                type="text"
-                required
-                value={formData.nama_item}
-                onChange={(e) => setFormData({...formData, nama_item: e.target.value})}
-              />
-              
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Input
                   label="Jumlah Order"
                   type="text"
                   required
                   value={formData.jumlah_order}
                   onChange={(e) => setFormData({...formData, jumlah_order: e.target.value})}
+                  placeholder="Contoh: 1000 pcs"
                 />
                 
                 <Input
-                  label="Customer (Opsional)"
+                  label="Customer"
                   type="text"
                   value={formData.customer}
                   onChange={(e) => setFormData({...formData, customer: e.target.value})}
+                  placeholder="Opsional"
                 />
               </div>
               
-              <div className="flex justify-end space-x-3 pt-4">
+              <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
                 <Button
                   type="button"
                   app="stoklabel"
@@ -343,7 +366,7 @@ const StoklabelMasuk = () => {
                   Batal
                 </Button>
                 <Button type="submit" app="stoklabel" variant="primary">
-                  {editingItem ? 'Update' : 'Tambah'} Label Masuk
+                  {editingItem ? 'Update Label' : 'Tambah Label Masuk'}
                 </Button>
               </div>
             </form>
