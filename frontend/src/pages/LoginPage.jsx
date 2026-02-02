@@ -279,7 +279,7 @@ const LoginPage = () => {
                       type="text"
                       required
                       autoComplete="username"
-                      className={`block w-full pl-14 pr-4 py-3.5 bg-slate-900/50 border-2 rounded-xl text-white placeholder-slate-500 focus:outline-none transition-all duration-300 ${
+                      className={`block w-full pl-[52px] pr-4 py-3.5 bg-slate-900/50 border-2 rounded-xl text-white placeholder-slate-500 focus:outline-none transition-all duration-300 ${
                         focusedField === 'username'
                           ? `${selectedApp?.borderColor} ring-4 ${selectedApp?.ringColor} ring-opacity-20`
                           : 'border-white/10 hover:border-white/20'
@@ -311,7 +311,7 @@ const LoginPage = () => {
                       type={showPassword ? 'text' : 'password'}
                       required
                       autoComplete="current-password"
-                      className={`block w-full pl-14 pr-12 py-3.5 bg-slate-900/50 border-2 rounded-xl text-white placeholder-slate-500 focus:outline-none transition-all duration-300 ${
+                      className={`block w-full pl-[52px] pr-12 py-3.5 bg-slate-900/50 border-2 rounded-xl text-white placeholder-slate-500 focus:outline-none transition-all duration-300 ${
                         focusedField === 'password'
                           ? `${selectedApp?.borderColor} ring-4 ${selectedApp?.ringColor} ring-opacity-20`
                           : 'border-white/10 hover:border-white/20'
