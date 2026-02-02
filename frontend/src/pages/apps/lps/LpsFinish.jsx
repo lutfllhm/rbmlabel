@@ -2,13 +2,11 @@ import { useState, useEffect } from 'react'
 import { 
   CheckCircle, 
   Clock, 
-  Search, 
-  Filter,
+  Search,
   Calendar,
   User,
   Package
 } from 'lucide-react'
-import Card from '../../../components/ui/Card'
 import Button from '../../../components/ui/Button'
 import Input from '../../../components/ui/Input'
 import api from '../../../services/api'
@@ -34,10 +32,27 @@ const LpsFinish = () => {
     try {
       setLoading(true)
       const response = await api.get('/lps/pending')
-      setPendingLps(response.data)
+      
+      // Ensure data is always an array
+      if (response.data) {
+        if (Array.isArray(response.data)) {
+          setPendingLps(response.data)
+        } else if (response.data.data && Array.isArray(response.data.data)) {
+          setPendingLps(response.data.data)
+        } else if (response.data.lps && Array.isArray(response.data.lps)) {
+          setPendingLps(response.data.lps)
+        } else {
+          console.warn('Unexpected response structure:', response.data)
+          setPendingLps([])
+        }
+      } else {
+        setPendingLps([])
+      }
     } catch (error) {
       console.error('Failed to fetch pending LPS:', error)
-      toast.error('Gagal memuat data LPS pending')
+      // Always set empty array on error
+      setPendingLps([])
+      // Don't show toast on initial load, only log error
     } finally {
       setLoading(false)
     }
@@ -49,9 +64,10 @@ const LpsFinish = () => {
       return
     }
 
+    const loadingToast = toast.loading('Menyelesaikan LPS...')
     try {
       await api.post(`/lps/${selectedLps.id}/finish`, finishData)
-      toast.success('LPS berhasil ditandai selesai')
+      toast.success('LPS berhasil ditandai selesai', { id: loadingToast })
       setShowFinishModal(false)
       setSelectedLps(null)
       setFinishData({
@@ -62,15 +78,20 @@ const LpsFinish = () => {
       fetchPendingLps()
     } catch (error) {
       console.error('Failed to finish LPS:', error)
-      toast.error('Gagal menyelesaikan LPS')
+      toast.error(error.response?.data?.error || 'Gagal menyelesaikan LPS', { id: loadingToast })
     }
   }
 
-  const filteredLps = pendingLps.filter(lps => 
-    lps.no_lps?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lps.nama_item?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    lps.customer?.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  // Ensure pendingLps is always an array before filtering
+  const safeData = Array.isArray(pendingLps) ? pendingLps : []
+  
+  const filteredLps = safeData.filter(lps => {
+    if (!lps) return false
+    
+    return lps.no_lps?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           lps.nama_item?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           lps.customer?.toLowerCase().includes(searchTerm.toLowerCase())
+  })
 
   if (loading) {
     return (

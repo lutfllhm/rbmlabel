@@ -13,7 +13,6 @@ import {
 } from 'lucide-react'
 import Card from '../../../components/ui/Card'
 import Button from '../../../components/ui/Button'
-import Badge from '../../../components/ui/Badge'
 import api from '../../../services/api'
 import toast from 'react-hot-toast'
 
