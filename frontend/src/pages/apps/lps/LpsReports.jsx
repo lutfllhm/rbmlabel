@@ -37,7 +37,7 @@ const LpsReports = () => {
     fetchReports()
   }, [dateRange, reportType])
 
-  const fetchReports = async () => {
+  const fetchReports = async (showToast = false) => {
     try {
       setLoading(true)
       const response = await api.get('/lps/reports', {
@@ -48,13 +48,22 @@ const LpsReports = () => {
         }
       })
       
-      setReports(response.data.reports)
-      setChartData(response.data.chartData)
-      setTrendData(response.data.trendData)
-      setPieData(response.data.pieData)
+      // Pastikan data selalu dalam format yang benar
+      setReports(response.data?.reports || {})
+      setChartData(Array.isArray(response.data?.chartData) ? response.data.chartData : [])
+      setTrendData(Array.isArray(response.data?.trendData) ? response.data.trendData : [])
+      setPieData(Array.isArray(response.data?.pieData) ? response.data.pieData : [])
     } catch (error) {
       console.error('Failed to fetch reports:', error)
-      toast.error('Gagal memuat laporan')
+      // Hanya tampilkan toast error jika diminta (saat user action)
+      if (showToast) {
+        toast.error('Gagal memuat laporan')
+      }
+      // Set default values untuk mencegah error
+      setReports({})
+      setChartData([])
+      setTrendData([])
+      setPieData([])
     } finally {
       setLoading(false)
     }
@@ -62,12 +71,13 @@ const LpsReports = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true)
-    await fetchReports()
+    await fetchReports(true) // Pass true untuk menampilkan toast
     setRefreshing(false)
     toast.success('Data berhasil diperbarui')
   }
 
   const handleExport = async (type) => {
+    const loadingToast = toast.loading(`Mengexport laporan ke ${type.toUpperCase()}...`)
     try {
       const response = await api.get(`/lps/reports/export/${type}`, {
         params: {
@@ -85,10 +95,10 @@ const LpsReports = () => {
       link.click()
       link.remove()
       
-      toast.success(`Laporan berhasil diexport ke ${type.toUpperCase()}`)
+      toast.success(`Laporan berhasil diexport ke ${type.toUpperCase()}`, { id: loadingToast })
     } catch (error) {
       console.error('Export failed:', error)
-      toast.error('Gagal export laporan')
+      toast.error('Gagal export laporan', { id: loadingToast })
     }
   }
 
