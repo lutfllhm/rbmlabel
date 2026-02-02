@@ -38,16 +38,32 @@ const LpsList = () => {
         params: {
           page: currentPage,
           search: searchTerm,
-          status: statusFilter,
+          status: statusFilter !== 'all' ? statusFilter : undefined,
           limit: 10
         }
       })
       
-      setLpsData(response.data.data)
-      setTotalPages(response.data.totalPages)
+      // Handle different response structures
+      if (response.data) {
+        if (Array.isArray(response.data)) {
+          // If response.data is directly an array
+          setLpsData(response.data)
+          setTotalPages(1)
+        } else if (response.data.data && Array.isArray(response.data.data)) {
+          // If response has data property
+          setLpsData(response.data.data)
+          setTotalPages(response.data.totalPages || 1)
+        } else {
+          // Fallback
+          setLpsData([])
+          setTotalPages(1)
+        }
+      }
     } catch (error) {
       console.error('Failed to fetch LPS data:', error)
-      toast.error('Gagal memuat data LPS')
+      toast.error(error.response?.data?.error || 'Gagal memuat data LPS')
+      setLpsData([])
+      setTotalPages(1)
     } finally {
       setLoading(false)
     }
@@ -96,7 +112,7 @@ const LpsList = () => {
     )
   }
 
-  const filteredData = lpsData.filter(lps => {
+  const filteredData = Array.isArray(lpsData) ? lpsData.filter(lps => {
     const matchesSearch = lps.no_lps?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lps.nama_item?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lps.customer?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -104,7 +120,7 @@ const LpsList = () => {
     const matchesStatus = statusFilter === 'all' || lps.status === statusFilter
     
     return matchesSearch && matchesStatus
-  })
+  }) : []
 
   if (loading) {
     return (
@@ -315,19 +331,19 @@ const LpsList = () => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <Card className="max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
-              <div className="flex items-center mb-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                  <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" />
+              <div className="flex items-center mb-6">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                  <Trash2 className="h-6 w-6 text-red-600 dark:text-red-400" />
                 </div>
-                <h3 className="ml-3 text-lg font-medium text-gray-900 dark:text-white">
+                <h3 className="ml-4 text-xl font-bold text-gray-900 dark:text-white">
                   Hapus LPS
                 </h3>
               </div>
-              <p className="text-sm text-gray-500 dark:text-slate-400 mb-6">
+              <p className="text-sm text-gray-600 dark:text-slate-400 mb-6">
                 Apakah Anda yakin ingin menghapus LPS "<strong className="text-gray-900 dark:text-white">{selectedLps?.no_lps}</strong>"? 
                 Tindakan ini tidak dapat dibatalkan.
               </p>
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <Button
                   variant="secondary"
                   onClick={() => {
@@ -343,7 +359,7 @@ const LpsList = () => {
                   onClick={handleDelete}
                   className="flex-1"
                 >
-                  Hapus
+                  Hapus LPS
                 </Button>
               </div>
             </div>
