@@ -259,60 +259,62 @@ const MaterialUsers = () => {
 
       {/* Create/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {modalMode === 'create' ? 'Tambah Pengguna Baru' : 'Edit Pengguna'}
-            </h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {modalMode === 'create' ? 'Tambah Pengguna Baru' : 'Edit Pengguna'}
+              </h2>
+              <button
+                onClick={() => {
+                  setShowModal(false)
+                  resetForm()
+                }}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Username *
-                </label>
-                <input
-                  type="text"
-                  value={formData.username}
-                  onChange={(e) => setFormData({...formData, username: e.target.value})}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  required
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Input
+                label="Username"
+                type="text"
+                required
+                value={formData.username}
+                onChange={(e) => setFormData({...formData, username: e.target.value})}
+                placeholder="Masukkan username"
+              />
+
+              <Input
+                label="Email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                placeholder="email@example.com"
+              />
+
+              <Input
+                label={modalMode === 'edit' ? 'Password (kosongkan jika tidak ingin mengubah)' : 'Password'}
+                type="password"
+                required={modalMode === 'create'}
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                placeholder="Masukkan password"
+                helperText={modalMode === 'edit' ? 'Biarkan kosong untuk mempertahankan password lama' : 'Minimal 6 karakter'}
+              />
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password {modalMode === 'edit' && '(kosongkan jika tidak ingin mengubah)'}
-                </label>
-                <input
-                  type="password"
-                  value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  required={modalMode === 'create'}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Role *
+                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                  Role <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({...formData, role: e.target.value})}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
                   required
                 >
                   <option value="user">User</option>
@@ -320,36 +322,38 @@ const MaterialUsers = () => {
                 </select>
               </div>
 
-              <div className="flex items-center">
+              <div className="flex items-center p-4 bg-gray-50 dark:bg-slate-900/50 rounded-lg">
                 <input
                   type="checkbox"
                   id="is_active"
                   checked={formData.is_active}
                   onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
-                  className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                  className="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-material-600 focus:ring-material-500"
                 />
-                <label htmlFor="is_active" className="ml-2 text-sm text-gray-700">
-                  Aktif
+                <label htmlFor="is_active" className="ml-3 text-sm font-medium text-gray-700 dark:text-slate-300">
+                  Akun Aktif
                 </label>
               </div>
 
-              <div className="flex justify-end space-x-3 pt-4">
-                <button
+              <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
+                <Button
                   type="button"
+                  app="material"
+                  variant="secondary"
                   onClick={() => {
                     setShowModal(false)
                     resetForm()
                   }}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
                 >
                   Batal
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+                  app="material"
+                  variant="primary"
                 >
-                  {modalMode === 'create' ? 'Tambah' : 'Update'}
-                </button>
+                  {modalMode === 'create' ? 'Tambah Pengguna' : 'Update Pengguna'}
+                </Button>
               </div>
             </form>
           </div>
@@ -358,36 +362,38 @@ const MaterialUsers = () => {
 
       {/* Delete Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
-            <div className="flex items-center mb-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <Trash2 className="h-5 w-5 text-red-600" />
+            <div className="flex items-center mb-6">
+              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                <Trash2 className="h-6 w-6 text-red-600 dark:text-red-400" />
               </div>
-              <h3 className="ml-3 text-lg font-medium text-gray-900">
+              <h3 className="ml-4 text-xl font-bold text-gray-900 dark:text-white">
                 Hapus Pengguna
               </h3>
             </div>
-            <p className="text-sm text-gray-500 mb-6">
-              Apakah Anda yakin ingin menghapus pengguna <strong>{selectedUser?.username}</strong>? 
+            <p className="text-sm text-gray-600 dark:text-slate-400 mb-6">
+              Apakah Anda yakin ingin menghapus pengguna <strong className="text-gray-900 dark:text-white">{selectedUser?.username}</strong>? 
               Tindakan ini tidak dapat dibatalkan.
             </p>
-            <div className="flex justify-end space-x-3">
-              <button
+            <div className="flex justify-end gap-3">
+              <Button
+                app="material"
+                variant="secondary"
                 onClick={() => {
                   setShowDeleteModal(false)
                   setSelectedUser(null)
                 }}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
               >
                 Batal
-              </button>
-              <button
+              </Button>
+              <Button
+                app="material"
+                variant="danger"
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
               >
-                Hapus
-              </button>
+                Hapus Pengguna
+              </Button>
             </div>
           </div>
         </div>
