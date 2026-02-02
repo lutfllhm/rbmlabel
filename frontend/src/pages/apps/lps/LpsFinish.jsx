@@ -184,8 +184,8 @@ const LpsFinish = () => {
 
       {/* Finish Modal */}
       {showFinishModal && selectedLps && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border border-gray-200 dark:border-slate-700 w-96 shadow-lg rounded-md bg-white dark:bg-slate-800">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
             <div className="mt-3">
               <div className="flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 mx-auto">
                 <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />

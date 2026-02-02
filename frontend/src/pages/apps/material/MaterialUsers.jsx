@@ -260,7 +260,7 @@ const MaterialUsers = () => {
       {/* Create/Edit Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full p-6 border border-gray-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               {modalMode === 'create' ? 'Tambah Pengguna Baru' : 'Edit Pengguna'}
             </h2>
@@ -359,7 +359,7 @@ const MaterialUsers = () => {
       {/* Delete Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full p-6 border border-gray-200 dark:border-slate-700">
+          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
             <div className="flex items-center mb-4">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
                 <Trash2 className="h-5 w-5 text-red-600" />

@@ -290,7 +290,7 @@ const StoklabelKeluar = () => {
       {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <Card className="max-w-lg w-full">
+          <Card className="max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                 {editingItem ? 'Edit Label Keluar' : 'Tambah Label Keluar'}

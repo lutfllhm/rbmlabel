@@ -269,7 +269,7 @@ const StoklabelStock = () => {
       {/* Add/Edit Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
                 {editingStock ? 'Edit Stock' : 'Tambah Stock'}
