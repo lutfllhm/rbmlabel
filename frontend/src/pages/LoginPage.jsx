@@ -248,8 +248,8 @@ const LoginPage = () => {
           </div>
 
           {/* Right Side - Login Form */}
-          <div className="space-y-6">{/* Login Form */}
-
+          <div className="space-y-6">
+            {/* Login Form */}
             <div className="bg-slate-800/50 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 p-8">
               <div className="flex items-center mb-8">
                 <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${selectedApp?.gradient} flex items-center justify-center mr-4 shadow-lg`}>
@@ -267,11 +267,13 @@ const LoginPage = () => {
                   <label htmlFor="username" className="block text-sm font-medium text-slate-300">
                     Username
                   </label>
-                  <div className="relative group">
-                    <div className={`absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors duration-200 ${
-                      focusedField === 'username' ? selectedApp?.textColor : 'text-slate-400'
+                  <div className="flex items-center gap-3">
+                    <div className={`flex-shrink-0 w-11 h-11 rounded-lg flex items-center justify-center transition-colors duration-200 ${
+                      focusedField === 'username' 
+                        ? `bg-gradient-to-br ${selectedApp?.gradient}` 
+                        : 'bg-slate-800/50 border-2 border-slate-700'
                     }`}>
-                      <UserIcon className="h-5 w-5" />
+                      <UserIcon className={`h-5 w-5 ${focusedField === 'username' ? 'text-white' : 'text-slate-400'}`} />
                     </div>
                     <input
                       id="username"
@@ -279,7 +281,7 @@ const LoginPage = () => {
                       type="text"
                       required
                       autoComplete="username"
-                      className={`block w-full pl-12 pr-4 py-3 bg-slate-900/50 border-2 rounded-lg text-white placeholder-slate-400 focus:outline-none transition-all duration-200 ${
+                      className={`flex-1 px-4 py-3 bg-slate-900/50 border-2 rounded-lg text-white placeholder-slate-400 focus:outline-none transition-all duration-200 ${
                         focusedField === 'username'
                           ? `${selectedApp?.borderColor} ring-2 ${selectedApp?.ringColor} ring-opacity-20`
                           : 'border-slate-700 hover:border-slate-600'
@@ -299,35 +301,38 @@ const LoginPage = () => {
                   <label htmlFor="password" className="block text-sm font-medium text-slate-300">
                     Password
                   </label>
-                  <div className="relative group">
-                    <div className={`absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors duration-200 ${
-                      focusedField === 'password' ? selectedApp?.textColor : 'text-slate-400'
+                  <div className="flex items-center gap-3">
+                    <div className={`flex-shrink-0 w-11 h-11 rounded-lg flex items-center justify-center transition-colors duration-200 ${
+                      focusedField === 'password' 
+                        ? `bg-gradient-to-br ${selectedApp?.gradient}` 
+                        : 'bg-slate-800/50 border-2 border-slate-700'
                     }`}>
-                      <Lock className="h-5 w-5" />
+                      <Lock className={`h-5 w-5 ${focusedField === 'password' ? 'text-white' : 'text-slate-400'}`} />
                     </div>
-                    <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? 'text' : 'password'}
-                      required
-                      autoComplete="current-password"
-                      className={`block w-full pl-12 pr-12 py-3 bg-slate-900/50 border-2 rounded-lg text-white placeholder-slate-400 focus:outline-none transition-all duration-200 ${
-                        focusedField === 'password'
-                          ? `${selectedApp?.borderColor} ring-2 ${selectedApp?.ringColor} ring-opacity-20`
-                          : 'border-slate-700 hover:border-slate-600'
-                      }`}
-                      placeholder="Masukkan password"
-                      value={formData.password}
-                      onChange={handleInputChange}
-                      onFocus={() => setFocusedField('password')}
-                      onBlur={() => setFocusedField(null)}
-                      disabled={isLoading}
-                    />
-                    <button
-                      type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-300 transition-colors"
-                      onClick={() => setShowPassword(!showPassword)}
-                      tabIndex={-1}
+                    <div className="relative flex-1">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        required
+                        autoComplete="current-password"
+                        className={`w-full px-4 py-3 pr-12 bg-slate-900/50 border-2 rounded-lg text-white placeholder-slate-400 focus:outline-none transition-all duration-200 ${
+                          focusedField === 'password'
+                            ? `${selectedApp?.borderColor} ring-2 ${selectedApp?.ringColor} ring-opacity-20`
+                            : 'border-slate-700 hover:border-slate-600'
+                        }`}
+                        placeholder="Masukkan password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('password')}
+                        onBlur={() => setFocusedField(null)}
+                        disabled={isLoading}
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-300 transition-colors"
+                        onClick={() => setShowPassword(!showPassword)}
+                        tabIndex={-1}
                     >
                       {showPassword ? (
                         <EyeOff className="h-5 w-5" />
@@ -337,8 +342,9 @@ const LoginPage = () => {
                     </button>
                   </div>
                 </div>
+              </div>
 
-                {/* Submit Button */}
+              {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isLoading}
