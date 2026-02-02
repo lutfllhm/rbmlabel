@@ -284,7 +284,7 @@ const LoginPage = () => {
                           ? `${selectedApp?.borderColor} ring-4 ${selectedApp?.ringColor} ring-opacity-20`
                           : 'border-white/10 hover:border-white/20'
                       }`}
-                      placeholder="Masukkan username Anda"
+                      placeholder=""
                       value={formData.username}
                       onChange={handleInputChange}
                       onFocus={() => setFocusedField('username')}
@@ -316,7 +316,7 @@ const LoginPage = () => {
                           ? `${selectedApp?.borderColor} ring-4 ${selectedApp?.ringColor} ring-opacity-20`
                           : 'border-white/10 hover:border-white/20'
                       }`}
-                      placeholder="Masukkan password Anda"
+                      placeholder=""
                       value={formData.password}
                       onChange={handleInputChange}
                       onFocus={() => setFocusedField('password')}
