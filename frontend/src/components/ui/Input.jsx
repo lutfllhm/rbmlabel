@@ -28,7 +28,7 @@ const Input = forwardRef(({
           ref={ref}
           className={`
             w-full px-4 py-2.5
-            ${leftIcon ? 'pl-11' : ''}
+            ${leftIcon ? 'pl-12' : ''}
             ${rightIcon ? 'pr-10' : ''}
             bg-white dark:bg-slate-800 
             border border-gray-300 dark:border-slate-600
