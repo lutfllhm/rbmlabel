@@ -53,17 +53,30 @@ const LpsList = () => {
           // If response has data property
           setLpsData(response.data.data)
           setTotalPages(response.data.totalPages || 1)
+        } else if (response.data.lps && Array.isArray(response.data.lps)) {
+          // Alternative structure with lps property
+          setLpsData(response.data.lps)
+          setTotalPages(response.data.totalPages || 1)
         } else {
-          // Fallback
+          // Fallback - set empty array
+          console.warn('Unexpected response structure:', response.data)
           setLpsData([])
           setTotalPages(1)
         }
+      } else {
+        // No data in response
+        setLpsData([])
+        setTotalPages(1)
       }
     } catch (error) {
       console.error('Failed to fetch LPS data:', error)
-      toast.error(error.response?.data?.error || 'Gagal memuat data LPS')
+      // Always set empty array on error to prevent undefined
       setLpsData([])
       setTotalPages(1)
+      // Only show toast on user action, not on initial load
+      if (currentPage > 1 || searchTerm || statusFilter !== 'all') {
+        toast.error(error.response?.data?.error || 'Gagal memuat data LPS')
+      }
     } finally {
       setLoading(false)
     }
@@ -112,7 +125,12 @@ const LpsList = () => {
     )
   }
 
-  const filteredData = Array.isArray(lpsData) ? lpsData.filter(lps => {
+  // Pastikan lpsData selalu array sebelum filter
+  const safeData = Array.isArray(lpsData) ? lpsData : []
+  
+  const filteredData = safeData.filter(lps => {
+    if (!lps) return false
+    
     const matchesSearch = lps.no_lps?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lps.nama_item?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lps.customer?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -120,7 +138,7 @@ const LpsList = () => {
     const matchesStatus = statusFilter === 'all' || lps.status === statusFilter
     
     return matchesSearch && matchesStatus
-  }) : []
+  })
 
   if (loading) {
     return (
