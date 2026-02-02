@@ -261,15 +261,15 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Username Field */}
-                <div className="relative">
-                  <label htmlFor="username" className="block text-sm font-semibold text-slate-300 mb-2">
+                <div className="space-y-2">
+                  <label htmlFor="username" className="block text-sm font-medium text-slate-300">
                     Username
                   </label>
-                  <div className="relative">
-                    <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${
-                      focusedField === 'username' ? selectedApp?.textColor : 'text-slate-500'
+                  <div className="relative group">
+                    <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
+                      focusedField === 'username' ? selectedApp?.textColor : 'text-slate-400'
                     }`}>
                       <UserIcon className="h-5 w-5" />
                     </div>
@@ -279,12 +279,12 @@ const LoginPage = () => {
                       type="text"
                       required
                       autoComplete="username"
-                      className={`block w-full pl-[52px] pr-4 py-3.5 bg-slate-900/50 border-2 rounded-xl text-white placeholder-slate-500 focus:outline-none transition-all duration-300 ${
+                      className={`block w-full pl-12 pr-4 py-3 bg-slate-900/50 border-2 rounded-lg text-white placeholder-slate-400 focus:outline-none transition-all duration-200 ${
                         focusedField === 'username'
-                          ? `${selectedApp?.borderColor} ring-4 ${selectedApp?.ringColor} ring-opacity-20`
-                          : 'border-white/10 hover:border-white/20'
+                          ? `${selectedApp?.borderColor} ring-2 ${selectedApp?.ringColor} ring-opacity-20`
+                          : 'border-slate-700 hover:border-slate-600'
                       }`}
-                      placeholder=""
+                      placeholder="Masukkan username"
                       value={formData.username}
                       onChange={handleInputChange}
                       onFocus={() => setFocusedField('username')}
@@ -295,13 +295,13 @@ const LoginPage = () => {
                 </div>
 
                 {/* Password Field */}
-                <div className="relative">
-                  <label htmlFor="password" className="block text-sm font-semibold text-slate-300 mb-2">
+                <div className="space-y-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-slate-300">
                     Password
                   </label>
-                  <div className="relative">
-                    <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors ${
-                      focusedField === 'password' ? selectedApp?.textColor : 'text-slate-500'
+                  <div className="relative group">
+                    <div className={`absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors duration-200 ${
+                      focusedField === 'password' ? selectedApp?.textColor : 'text-slate-400'
                     }`}>
                       <Lock className="h-5 w-5" />
                     </div>
@@ -311,12 +311,12 @@ const LoginPage = () => {
                       type={showPassword ? 'text' : 'password'}
                       required
                       autoComplete="current-password"
-                      className={`block w-full pl-[52px] pr-12 py-3.5 bg-slate-900/50 border-2 rounded-xl text-white placeholder-slate-500 focus:outline-none transition-all duration-300 ${
+                      className={`block w-full pl-12 pr-12 py-3 bg-slate-900/50 border-2 rounded-lg text-white placeholder-slate-400 focus:outline-none transition-all duration-200 ${
                         focusedField === 'password'
-                          ? `${selectedApp?.borderColor} ring-4 ${selectedApp?.ringColor} ring-opacity-20`
-                          : 'border-white/10 hover:border-white/20'
+                          ? `${selectedApp?.borderColor} ring-2 ${selectedApp?.ringColor} ring-opacity-20`
+                          : 'border-slate-700 hover:border-slate-600'
                       }`}
-                      placeholder=""
+                      placeholder="Masukkan password"
                       value={formData.password}
                       onChange={handleInputChange}
                       onFocus={() => setFocusedField('password')}
@@ -325,14 +325,14 @@ const LoginPage = () => {
                     />
                     <button
                       type="button"
-                      className="absolute inset-y-0 right-0 pr-4 flex items-center hover:scale-110 transition-transform"
+                      className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-300 transition-colors"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-slate-400 hover:text-slate-300" />
+                        <EyeOff className="h-5 w-5" />
                       ) : (
-                        <Eye className="h-5 w-5 text-slate-400 hover:text-slate-300" />
+                        <Eye className="h-5 w-5" />
                       )}
                     </button>
                   </div>
@@ -342,7 +342,7 @@ const LoginPage = () => {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`group relative w-full flex items-center justify-center px-6 py-4 overflow-hidden font-bold text-white text-lg transition-all duration-300 ease-out rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none bg-gradient-to-r ${selectedApp?.gradient}`}
+                  className={`group relative w-full flex items-center justify-center px-6 py-3.5 mt-6 overflow-hidden font-semibold text-white transition-all duration-200 ease-out rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none bg-gradient-to-r ${selectedApp?.gradient}`}
                 >
                   <span className="relative flex items-center">
                     {isLoading ? (
