@@ -186,7 +186,7 @@ const HomePage = () => {
       </header>
 
       {/* Hero Section with Background Carousel */}
-      <section className="relative pt-24 pb-20 overflow-hidden">
+      <section className="relative pt-20 pb-20 overflow-hidden">
         {/* Background Image Carousel with overlay */}
         <div className="absolute inset-0 z-0">
           {backgroundImages.map((image, index) => (
@@ -211,7 +211,7 @@ const HomePage = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
             {/* Badge */}
-            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-full mb-8 border border-slate-200 dark:border-white/20 transition-colors duration-300">
+            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-full mb-4 border border-slate-200 dark:border-white/20 transition-colors duration-300">
               <Star className="h-4 w-4 text-yellow-500 dark:text-yellow-400 mr-2" />
               <span className="text-sm font-medium text-slate-900 dark:text-white transition-colors duration-300">Sistem Terintegrasi #1 di Indonesia</span>
             </div>
