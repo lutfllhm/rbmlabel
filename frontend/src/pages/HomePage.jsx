@@ -26,6 +26,13 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true)
   const [activeFeature, setActiveFeature] = useState(0)
   const [currentBgImage, setCurrentBgImage] = useState(0)
+  const [scrollY, setScrollY] = useState(0)
+  const [isVisible, setIsVisible] = useState({
+    hero: false,
+    apps: false,
+    features: false,
+    cta: false
+  })
 
   // Background images carousel
   const backgroundImages = [
@@ -81,6 +88,29 @@ const HomePage = () => {
       setCurrentBgImage((prev) => (prev + 1) % backgroundImages.length)
     }, 5000)
     return () => clearInterval(interval)
+  }, [])
+
+  // Scroll animation handler
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY)
+      
+      // Check visibility of sections
+      const sections = ['hero', 'apps', 'features', 'cta']
+      sections.forEach(section => {
+        const element = document.getElementById(section)
+        if (element) {
+          const rect = element.getBoundingClientRect()
+          const isInView = rect.top < window.innerHeight * 0.75 && rect.bottom > 0
+          setIsVisible(prev => ({ ...prev, [section]: isInView }))
+        }
+      })
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Initial check
+    
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const apps = [
@@ -186,14 +216,14 @@ const HomePage = () => {
       </header>
 
       {/* Hero Section with Background Carousel */}
-      <section className="relative pt-16 pb-20 overflow-hidden">
+      <section id="hero" className="relative pt-16 pb-20 overflow-hidden">
         {/* Background Image Carousel with overlay */}
         <div className="absolute inset-0 z-0">
           {backgroundImages.map((image, index) => (
             <div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentBgImage ? 'opacity-100' : 'opacity-0'
+              className={`absolute inset-0 transition-all duration-1000 ${
+                index === currentBgImage ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
               }`}
             >
               <img
@@ -208,35 +238,49 @@ const HomePage = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div 
+          className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
+          style={{
+            transform: `translateY(${scrollY * 0.3}px)`,
+            transition: 'transform 0.1s ease-out'
+          }}
+        >
           <div className="text-center">
             {/* Badge */}
-            <div className="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-full mb-4 border border-slate-200 dark:border-white/20 transition-colors duration-300">
-              <Star className="h-4 w-4 text-yellow-500 dark:text-yellow-400 mr-2" />
+            <div className={`inline-flex items-center px-4 py-2 bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-full mb-4 border border-slate-200 dark:border-white/20 transition-all duration-700 ${
+              isVisible.hero ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}>
+              <Star className="h-4 w-4 text-yellow-500 dark:text-yellow-400 mr-2 animate-pulse" />
               <span className="text-sm font-medium text-slate-900 dark:text-white transition-colors duration-300">Sistem Terintegrasi #1 di Indonesia</span>
             </div>
             
             {/* Main Heading */}
-            <h2 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight transition-colors duration-300">
+            <h2 className={`text-5xl md:text-7xl font-bold text-slate-900 dark:text-white mb-6 leading-tight transition-all duration-700 delay-100 ${
+              isVisible.hero ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}>
               Sistem Manajemen
               <br />
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-gradient">
                 Produksi Modern
               </span>
             </h2>
             
             {/* Subtitle */}
-            <p className="text-xl text-slate-600 dark:text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed transition-colors duration-300">
+            <p className={`text-xl text-slate-600 dark:text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed transition-all duration-700 delay-200 ${
+              isVisible.hero ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}>
               Platform all-in-one untuk mengelola material, stok label, dan laporan produksi
               <br className="hidden md:block" />
               dengan teknologi terkini dan interface yang intuitif
             </p>
             
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 transition-all duration-700 delay-300 ${
+              isVisible.hero ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}>
               <Link
                 to="/login"
-                className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-bold text-white overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/50 hover:scale-105"
+                className="group relative px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl font-bold text-white overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/50 hover:scale-105 animate-pulse-slow"
               >
                 <span className="relative flex items-center text-lg">
                   Mulai Sekarang
@@ -246,7 +290,7 @@ const HomePage = () => {
               
               <a
                 href="#apps"
-                className="px-8 py-4 bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-xl font-bold text-slate-900 dark:text-white border-2 border-slate-300 dark:border-white/20 hover:bg-white dark:hover:bg-white/20 transition-all duration-300"
+                className="px-8 py-4 bg-white/80 dark:bg-white/10 backdrop-blur-md rounded-xl font-bold text-slate-900 dark:text-white border-2 border-slate-300 dark:border-white/20 hover:bg-white dark:hover:bg-white/20 transition-all duration-300 hover:scale-105"
               >
                 Lihat Fitur
               </a>
