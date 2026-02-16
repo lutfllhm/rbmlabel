@@ -2,31 +2,28 @@ import { Package, Tags, FileText, BarChart3, TrendingUp, Zap } from 'lucide-reac
 
 const FloatingIcons = () => {
   const icons = [
-    { Icon: Package, delay: 0, duration: 15 },
-    { Icon: Tags, delay: 2, duration: 18 },
-    { Icon: FileText, delay: 4, duration: 20 },
-    { Icon: BarChart3, delay: 1, duration: 16 },
-    { Icon: TrendingUp, delay: 3, duration: 19 },
-    { Icon: Zap, delay: 5, duration: 17 }
+    { Icon: Package, delay: 0, duration: 20, x: 10, y: 15 },
+    { Icon: Tags, delay: 3, duration: 22, x: 85, y: 20 },
+    { Icon: FileText, delay: 6, duration: 24, x: 15, y: 75 },
+    { Icon: BarChart3, delay: 2, duration: 21, x: 80, y: 70 }
   ]
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {icons.map(({ Icon, delay, duration }, index) => (
+      {icons.map(({ Icon, delay, duration, x, y }, index) => (
         <div
           key={index}
-          className="absolute"
+          className="absolute opacity-5 dark:opacity-10"
           style={{
-            left: `${10 + index * 15}%`,
-            top: `${20 + (index % 3) * 25}%`,
+            left: `${x}%`,
+            top: `${y}%`,
             animation: `float ${duration}s ease-in-out infinite`,
-            animationDelay: `${delay}s`,
-            opacity: 0.1
+            animationDelay: `${delay}s`
           }}
         >
           <Icon 
-            className="w-16 h-16 text-blue-500 dark:text-blue-400" 
-            strokeWidth={1}
+            className="w-20 h-20 text-slate-600 dark:text-slate-400" 
+            strokeWidth={0.5}
           />
         </div>
       ))}
