@@ -20,6 +20,10 @@ import {
 } from 'lucide-react'
 import api from '../services/api'
 import DarkModeToggle from '../components/DarkModeToggle'
+import AnimatedBackground from '../components/animations/AnimatedBackground'
+import FloatingIcons from '../components/animations/FloatingIcons'
+import WaveAnimation from '../components/animations/WaveAnimation'
+import CircuitPattern from '../components/animations/CircuitPattern'
 
 const HomePage = () => {
   const [dashboardData, setDashboardData] = useState(null)
@@ -217,6 +221,11 @@ const HomePage = () => {
 
       {/* Hero Section with Background Carousel */}
       <section id="hero" className="relative pt-16 pb-20 overflow-hidden">
+        {/* SVG Animated Background */}
+        <AnimatedBackground />
+        <FloatingIcons />
+        <CircuitPattern />
+        
         {/* Background Image Carousel with overlay */}
         <div className="absolute inset-0 z-0">
           {backgroundImages.map((image, index) => (
@@ -327,6 +336,9 @@ const HomePage = () => {
             )}
           </div>
         </div>
+        
+        {/* Wave Animation at bottom of hero */}
+        <WaveAnimation />
       </section>
 
       {/* Applications Section */}
