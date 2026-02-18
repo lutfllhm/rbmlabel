@@ -136,18 +136,35 @@ const Sidebar = () => {
     }
   }
 
+  const getAppColor = (app) => {
+    switch (app) {
+      case 'material':
+        return 'bg-blue-400'
+      case 'stoklabel':
+        return 'bg-emerald-400'
+      case 'lps':
+        return 'bg-orange-400'
+      default:
+        return 'bg-blue-400'
+    }
+  }
+
   const menuItems = getMenuItems()
+  const appColor = getAppColor(user?.app)
 
   return (
-    <div className="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg border-r border-gray-200 pt-16">
+    <div className="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-slate-800 border-r-8 border-black pt-20 shadow-[8px_0_0px_0px_rgba(0,0,0,1)]">
       <div className="flex flex-col h-full">
         <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-          <nav className="mt-5 flex-1 px-2 space-y-1">
-            {menuItems.map((item) => {
+          <nav className="mt-5 flex-1 px-3 space-y-3">
+            {menuItems.map((item, index) => {
               const Icon = item.icon
               const isActive = item.exact 
                 ? location.pathname === item.href
                 : location.pathname.startsWith(item.href)
+
+              // Asymmetric rotation for neo-brutalism
+              const rotation = index % 3 === 0 ? '-rotate-1' : index % 3 === 1 ? 'rotate-1' : 'rotate-0'
 
               return (
                 <NavLink
@@ -155,17 +172,16 @@ const Sidebar = () => {
                   to={item.href}
                   className={({ isActive: navIsActive }) => {
                     const active = item.exact ? navIsActive : isActive
-                    return `group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
+                    return `group flex items-center px-4 py-3 text-sm font-black uppercase border-4 border-black transition-all ${rotation} ${
                       active
-                        ? 'bg-primary-100 text-primary-900 border-r-2 border-primary-600'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        ? `${appColor} shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] scale-105`
+                        : 'bg-white dark:bg-slate-700 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]'
                     }`
                   }}
                 >
                   <Icon
-                    className={`mr-3 flex-shrink-0 h-5 w-5 ${
-                      isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-gray-500'
-                    }`}
+                    className={`mr-3 flex-shrink-0 h-5 w-5 text-black dark:text-white`}
+                    strokeWidth={3}
                   />
                   {item.name}
                 </NavLink>
@@ -175,18 +191,18 @@ const Sidebar = () => {
         </div>
 
         {/* Settings at bottom */}
-        <div className="flex-shrink-0 p-2 border-t border-gray-200">
+        <div className="flex-shrink-0 p-3 border-t-8 border-black bg-gradient-to-r from-yellow-300 to-pink-300 dark:from-slate-700 dark:to-slate-600">
           <NavLink
             to={`/apps/${user?.app}/settings`}
             className={({ isActive }) =>
-              `group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors ${
+              `group flex items-center px-4 py-3 text-sm font-black uppercase border-4 border-black transition-all rotate-1 ${
                 isActive
-                  ? 'bg-primary-100 text-primary-900'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  ? 'bg-black text-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
+                  : 'bg-white dark:bg-slate-800 text-black dark:text-white hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]'
               }`
             }
           >
-            <Settings className="mr-3 flex-shrink-0 h-5 w-5 text-gray-400 group-hover:text-gray-500" />
+            <Settings className="mr-3 flex-shrink-0 h-5 w-5" strokeWidth={3} />
             Settings
           </NavLink>
         </div>

@@ -7,7 +7,7 @@ const ModernLayout = ({ app = 'material', children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
       {/* Navbar - Fixed at top */}
       <ModernNavbar 
         app={app} 

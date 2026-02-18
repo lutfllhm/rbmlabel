@@ -377,8 +377,6 @@ const StoklabelKeluar = () => {
                     rows={3}
                     placeholder="Tambahkan keterangan jika diperlukan"
                     className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-stoklabel-500 dark:focus:ring-stoklabel-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
-                    rows="3"
-                    placeholder="Catatan opsional..."
                   />
                 </div>
                 

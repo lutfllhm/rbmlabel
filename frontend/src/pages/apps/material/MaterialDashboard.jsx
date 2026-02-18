@@ -141,23 +141,23 @@ const MaterialDashboard = () => {
   ]
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Material Dashboard</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Kelola stok material dan SPK produksi</p>
+        <div className="bg-white dark:bg-slate-800 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-1">
+          <h1 className="text-3xl font-black uppercase text-black dark:text-white">Material Dashboard</h1>
+          <p className="text-base font-bold text-black/70 dark:text-white/70 mt-1">Kelola stok material dan SPK produksi</p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Link to="/apps/material/stock?action=add">
-            <Button app="material" variant="primary" className="flex items-center">
-              <Plus className="h-4 w-4 mr-2" />
+            <Button app="material" variant="primary" className="flex items-center px-6 py-3 bg-blue-400 text-black font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+              <Plus className="h-5 w-5 mr-2" strokeWidth={3} />
               Tambah Material
             </Button>
           </Link>
           <Link to="/apps/material/spk?action=create">
-            <Button app="material" variant="secondary" className="flex items-center">
-              <FileText className="h-4 w-4 mr-2" />
+            <Button app="material" variant="secondary" className="flex items-center px-6 py-3 bg-white dark:bg-slate-700 text-black dark:text-white font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all">
+              <FileText className="h-5 w-5 mr-2" strokeWidth={3} />
               Buat SPK
             </Button>
           </Link>
@@ -169,159 +169,148 @@ const MaterialDashboard = () => {
         {statCards.map((stat, index) => {
           const Icon = stat.icon
           const isIncrease = stat.changeType === 'increase'
+          const rotations = ['rotate-2', '-rotate-1', 'rotate-1', '-rotate-2']
           return (
-            <Card key={index} hover className="p-6 relative overflow-hidden group">
-              {/* Gradient Background on Hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-material-500/5 to-material-600/5 dark:from-material-400/10 dark:to-material-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              <div className="relative flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600 dark:text-slate-400">{stat.title}</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2 group-hover:scale-105 transition-transform duration-300">{stat.value.toLocaleString()}</p>
-                  <div className="flex items-center mt-3">
-                    <div className={`flex items-center px-2 py-1 rounded-lg ${
-                      isIncrease 
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' 
-                        : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400'
-                    }`}>
-                      <TrendingUp className={`h-3 w-3 mr-1 ${!isIncrease && 'rotate-180'}`} />
-                      <span className="text-xs font-semibold">{stat.change}</span>
-                    </div>
-                    <span className="text-xs text-gray-500 dark:text-slate-500 ml-2">vs bulan lalu</span>
-                  </div>
-                </div>
-                <div className={`w-14 h-14 rounded-xl ${stat.color} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <Icon className="h-7 w-7 text-white" />
+            <div key={index} className={`bg-white dark:bg-slate-800 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all ${rotations[index]}`}>
+              <div className="flex items-center justify-between mb-4">
+                <div className={`w-14 h-14 ${stat.color} border-4 border-black flex items-center justify-center rotate-6`}>
+                  <Icon className="h-7 w-7 text-black" strokeWidth={3} />
                 </div>
               </div>
-            </Card>
+              <p className="text-sm font-black uppercase text-black/70 dark:text-white/70">{stat.title}</p>
+              <p className="text-4xl font-black text-black dark:text-white mt-2">{stat.value.toLocaleString()}</p>
+              <div className="flex items-center mt-3">
+                <div className={`flex items-center px-3 py-1 border-2 border-black ${
+                  isIncrease 
+                    ? 'bg-green-400 text-black' 
+                    : 'bg-red-400 text-black'
+                }`}>
+                  <TrendingUp className={`h-4 w-4 mr-1 ${!isIncrease && 'rotate-180'}`} strokeWidth={3} />
+                  <span className="text-xs font-black">{stat.change}</span>
+                </div>
+                <span className="text-xs font-bold text-black/70 dark:text-white/70 ml-2">vs bulan lalu</span>
+              </div>
+            </div>
           )
         })}
       </div>
 
       {/* Quick Actions */}
-      <Card className="p-6 bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-800/50">
+      <div className="bg-white dark:bg-slate-800 border-4 border-black p-6 shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] -rotate-1">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Aksi Cepat</h2>
-          <div className="w-10 h-10 rounded-xl bg-material-100 dark:bg-material-900/30 flex items-center justify-center">
-            <TrendingUp className="h-5 w-5 text-material-600 dark:text-material-400" />
+          <h2 className="text-2xl font-black uppercase text-black dark:text-white">Aksi Cepat</h2>
+          <div className="w-12 h-12 bg-blue-400 border-4 border-black flex items-center justify-center rotate-12">
+            <TrendingUp className="h-6 w-6 text-black" strokeWidth={3} />
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {quickActions.map((action, index) => {
             const Icon = action.icon
+            const rotations = ['rotate-1', '-rotate-2', 'rotate-2', '-rotate-1']
             return (
               <Link
                 key={index}
                 to={action.href}
-                className="relative p-5 rounded-xl border-2 border-gray-200 dark:border-slate-700 hover:border-material-400 dark:hover:border-material-500 hover:shadow-xl transition-all group bg-white dark:bg-slate-800 overflow-hidden"
+                className={`bg-white dark:bg-slate-700 border-4 border-black p-5 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all ${rotations[index]}`}
               >
-                {/* Hover Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-material-500/5 to-material-600/5 dark:from-material-400/10 dark:to-material-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <div className="relative">
-                  <div className={`w-12 h-12 rounded-xl ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-md`}>
-                    <Icon className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-material-600 dark:group-hover:text-material-400 transition-colors">{action.title}</h3>
-                  <p className="text-sm text-gray-500 dark:text-slate-400">{action.description}</p>
+                <div className={`w-12 h-12 ${action.color} border-4 border-black flex items-center justify-center mb-4 rotate-6`}>
+                  <Icon className="h-6 w-6 text-black" strokeWidth={3} />
                 </div>
+                <h3 className="font-black uppercase text-black dark:text-white mb-1">{action.title}</h3>
+                <p className="text-sm font-bold text-black/70 dark:text-white/70">{action.description}</p>
               </Link>
             )
           })}
         </div>
-      </Card>
+      </div>
 
       {/* Recent Activities & Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Activities */}
-        <Card className="p-6 bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-800/50">
+        <div className="bg-white dark:bg-slate-800 border-4 border-black p-6 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] rotate-1">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <div className="w-10 h-10 rounded-xl bg-material-100 dark:bg-material-900/30 flex items-center justify-center mr-3">
-                <FileText className="h-5 w-5 text-material-600 dark:text-material-400" />
+              <div className="w-12 h-12 bg-purple-400 border-4 border-black flex items-center justify-center mr-3 rotate-6">
+                <FileText className="h-6 w-6 text-black" strokeWidth={3} />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Aktivitas Terbaru</h2>
+              <h2 className="text-2xl font-black uppercase text-black dark:text-white">Aktivitas Terbaru</h2>
             </div>
-            <Link to="/apps/material/spk" className="text-sm text-material-600 dark:text-material-400 hover:text-material-700 dark:hover:text-material-300 font-medium hover:underline">
-              Lihat semua →
-            </Link>
           </div>
           <div className="space-y-3">
             {recentActivities.length > 0 ? (
               recentActivities.map((activity, index) => (
-                <div key={index} className="group flex items-center space-x-3 p-4 rounded-xl bg-white dark:bg-slate-800/50 hover:bg-material-50 dark:hover:bg-slate-700/50 transition-all duration-300 border border-gray-100 dark:border-slate-700 hover:border-material-300 dark:hover:border-material-600 hover:shadow-md cursor-pointer">
-                  <div className="w-10 h-10 rounded-full bg-material-100 dark:bg-material-900/30 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                    <FileText className="h-5 w-5 text-material-600 dark:text-material-400" />
+                <div key={index} className="flex items-center space-x-3 p-4 bg-yellow-300 dark:bg-slate-700 border-2 border-black hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all cursor-pointer">
+                  <div className="w-10 h-10 bg-black border-2 border-black flex items-center justify-center flex-shrink-0">
+                    <FileText className="h-5 w-5 text-white" strokeWidth={3} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-material-600 dark:group-hover:text-material-400 transition-colors">{activity.title}</p>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{activity.description}</p>
+                    <p className="text-sm font-black text-black dark:text-white truncate">{activity.title}</p>
+                    <p className="text-xs font-bold text-black/70 dark:text-white/70 truncate">{activity.description}</p>
                   </div>
-                  <span className="text-xs text-gray-400 dark:text-slate-500 flex-shrink-0">{activity.time}</span>
+                  <span className="text-xs font-bold text-black/70 dark:text-white/70 flex-shrink-0">{activity.time}</span>
                 </div>
               ))
             ) : (
-              <div className="text-center py-12">
-                <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
-                  <FileText className="h-10 w-10 text-gray-300 dark:text-slate-600" />
+              <div className="text-center py-12 border-4 border-black bg-yellow-300 dark:bg-slate-700">
+                <div className="w-20 h-20 bg-black border-4 border-black flex items-center justify-center mx-auto mb-4">
+                  <FileText className="h-10 w-10 text-white" strokeWidth={3} />
                 </div>
-                <p className="text-gray-500 dark:text-slate-400 font-medium">Tidak ada aktivitas terbaru</p>
-                <p className="text-sm text-gray-400 dark:text-slate-500 mt-1">Aktivitas akan muncul di sini</p>
+                <p className="text-black dark:text-white font-black uppercase">Tidak ada aktivitas terbaru</p>
+                <p className="text-sm font-bold text-black/70 dark:text-white/70 mt-1">Aktivitas akan muncul di sini</p>
               </div>
             )}
           </div>
-        </Card>
+        </div>
 
         {/* Material Categories Chart */}
-        <Card className="p-6 bg-gradient-to-br from-white to-gray-50 dark:from-slate-800 dark:to-slate-800/50">
+        <div className="bg-white dark:bg-slate-800 border-4 border-black p-6 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] -rotate-1">
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 rounded-xl bg-material-100 dark:bg-material-900/30 flex items-center justify-center mr-3">
-              <BarChart3 className="h-5 w-5 text-material-600 dark:text-material-400" />
+            <div className="w-12 h-12 bg-orange-400 border-4 border-black flex items-center justify-center mr-3 -rotate-6">
+              <BarChart3 className="h-6 w-6 text-black" strokeWidth={3} />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Material per Kategori</h2>
+            <h2 className="text-2xl font-black uppercase text-black dark:text-white">Material per Kategori</h2>
           </div>
           <div className="space-y-4">
             {stats?.categoryStats?.map((category, index) => {
               const percentage = (category.count / stats.totalMaterials) * 100
               const colors = [
-                'bg-blue-500 dark:bg-blue-400',
-                'bg-green-500 dark:bg-green-400',
-                'bg-purple-500 dark:bg-purple-400',
-                'bg-orange-500 dark:bg-orange-400',
-                'bg-pink-500 dark:bg-pink-400'
+                'bg-blue-400',
+                'bg-green-400',
+                'bg-purple-400',
+                'bg-orange-400',
+                'bg-pink-400'
               ]
               return (
-                <div key={index} className="space-y-2 group">
+                <div key={index} className="space-y-2">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <div className={`w-3 h-3 rounded-full ${colors[index % colors.length]} mr-2`}></div>
-                      <span className="text-sm font-medium text-gray-700 dark:text-slate-300 group-hover:text-material-600 dark:group-hover:text-material-400 transition-colors">{category.name}</span>
+                      <div className={`w-4 h-4 ${colors[index % colors.length]} border-2 border-black mr-2`}></div>
+                      <span className="text-sm font-black uppercase text-black dark:text-white">{category.name}</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="text-sm font-bold text-gray-900 dark:text-white mr-2">{category.count}</span>
-                      <span className="text-xs text-gray-500 dark:text-slate-400">({percentage.toFixed(1)}%)</span>
+                      <span className="text-sm font-black text-black dark:text-white mr-2">{category.count}</span>
+                      <span className="text-xs font-bold text-black/70 dark:text-white/70">({percentage.toFixed(1)}%)</span>
                     </div>
                   </div>
-                  <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 overflow-hidden">
+                  <div className="w-full bg-white dark:bg-slate-700 border-2 border-black h-6">
                     <div 
-                      className={`${colors[index % colors.length]} h-3 rounded-full transition-all duration-700 ease-out group-hover:opacity-90`}
+                      className={`${colors[index % colors.length]} h-full border-r-2 border-black transition-all duration-700`}
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>
                 </div>
               )
             }) || (
-              <div className="text-center py-12">
-                <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
-                  <BarChart3 className="h-10 w-10 text-gray-300 dark:text-slate-600" />
+              <div className="text-center py-12 border-4 border-black bg-yellow-300 dark:bg-slate-700">
+                <div className="w-20 h-20 bg-black border-4 border-black flex items-center justify-center mx-auto mb-4">
+                  <BarChart3 className="h-10 w-10 text-white" strokeWidth={3} />
                 </div>
-                <p className="text-gray-500 dark:text-slate-400 font-medium">Tidak ada data tersedia</p>
-                <p className="text-sm text-gray-400 dark:text-slate-500 mt-1">Data kategori akan muncul di sini</p>
+                <p className="text-black dark:text-white font-black uppercase">Tidak ada data tersedia</p>
+                <p className="text-sm font-bold text-black/70 dark:text-white/70 mt-1">Data kategori akan muncul di sini</p>
               </div>
             )}
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   )

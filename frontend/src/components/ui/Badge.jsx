@@ -5,19 +5,20 @@ const Badge = ({
   className = '' 
 }) => {
   const variants = {
-    default: 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300',
-    success: 'bg-success-light/10 dark:bg-success-dark/10 text-success-light dark:text-success-dark',
-    warning: 'bg-warning-light/10 dark:bg-warning-dark/10 text-warning-light dark:text-warning-dark',
-    error: 'bg-error-light/10 dark:bg-error-dark/10 text-error-light dark:text-error-dark',
-    info: 'bg-info-light/10 dark:bg-info-dark/10 text-info-light dark:text-info-dark',
-    material: 'bg-material-100 dark:bg-material-900/20 text-material-700 dark:text-material-300',
-    stoklabel: 'bg-stoklabel-100 dark:bg-stoklabel-900/20 text-stoklabel-700 dark:text-stoklabel-300',
-    lps: 'bg-lps-100 dark:bg-lps-900/20 text-lps-700 dark:text-lps-300',
+    default: 'bg-gray-200 dark:bg-slate-700 text-black dark:text-white border-2 border-black',
+    success: 'bg-emerald-400 text-black border-2 border-black',
+    warning: 'bg-yellow-400 text-black border-2 border-black',
+    error: 'bg-red-500 text-white border-2 border-black',
+    info: 'bg-blue-400 text-black border-2 border-black',
+    material: 'bg-blue-300 text-black border-2 border-black',
+    stoklabel: 'bg-emerald-300 text-black border-2 border-black',
+    lps: 'bg-orange-300 text-black border-2 border-black',
   }
 
   return (
     <span className={`
-      inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+      inline-flex items-center px-3 py-1 text-xs font-black uppercase
+      shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
       ${variants[variant] || variants.default}
       ${className}
     `}>

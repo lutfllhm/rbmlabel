@@ -41,7 +41,7 @@ const Modal = ({
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" />
       
       {/* Modal Container - Centered with padding */}
       <div className="flex min-h-full items-center justify-center p-4">
@@ -50,27 +50,27 @@ const Modal = ({
           className={`relative w-full ${sizes[size]} my-8 animate-slide-up`}
           onClick={(e) => e.stopPropagation()}
         >
-          <Card className="overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="bg-white dark:bg-slate-800 border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] overflow-hidden max-h-[90vh] flex flex-col -rotate-1">
             {/* Header - Fixed */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex-shrink-0">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <div className="flex items-center justify-between p-6 border-b-4 border-black bg-gradient-to-r from-yellow-300 to-pink-300 dark:from-slate-700 dark:to-slate-600 flex-shrink-0">
+              <h2 className="text-2xl font-black uppercase text-black dark:text-white">
                 {title}
               </h2>
               {showCloseButton && (
                 <button
                   onClick={onClose}
-                  className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors"
+                  className="p-2 border-4 border-black bg-red-500 text-white hover:bg-red-600 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] rotate-3"
                 >
-                  <X className="h-5 w-5" />
+                  <X className="h-5 w-5" strokeWidth={3} />
                 </button>
               )}
             </div>
             
             {/* Content - Scrollable */}
-            <div className="p-6 overflow-y-auto flex-1">
+            <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-slate-800">
               {children}
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     </div>

@@ -74,54 +74,61 @@ const MaterialSettings = () => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Pengaturan</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Konfigurasi aplikasi Material Management</p>
+        <div className="bg-white dark:bg-slate-800 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-1">
+          <h1 className="text-3xl font-black uppercase text-black dark:text-white">Pengaturan</h1>
+          <p className="text-base font-bold text-black/70 dark:text-white/70 mt-1">Konfigurasi aplikasi Material Management</p>
         </div>
         <Button
           app="material"
           variant="primary"
           onClick={handleSave}
           disabled={loading}
-          className="flex items-center"
+          className="flex items-center px-6 py-3 bg-blue-400 text-black font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all"
         >
           {loading ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-4 border-black border-t-transparent mr-2"></div>
           ) : (
-            <Save className="w-4 h-4 mr-2" />
+            <Save className="w-5 h-5 mr-2" strokeWidth={3} />
           )}
           {loading ? 'Menyimpan...' : 'Simpan Pengaturan'}
         </Button>
       </div>
 
       {/* General Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <div className="bg-white dark:bg-slate-800 border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] -rotate-1">
+        <div className="p-6 border-b-4 border-black bg-yellow-300 dark:bg-slate-700">
           <div className="flex items-center">
-            <SettingsIcon className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Pengaturan Umum</h2>
+            <div className="w-10 h-10 bg-black border-2 border-black flex items-center justify-center mr-3">
+              <SettingsIcon className="w-5 h-5 text-white" strokeWidth={3} />
+            </div>
+            <h2 className="text-2xl font-black uppercase text-black dark:text-white">Pengaturan Umum</h2>
           </div>
         </div>
         <div className="p-6 space-y-4">
-          <Input
-            label="Nama Aplikasi"
-            type="text"
-            value={settings.app_name}
-            onChange={(e) => handleChange('app_name', e.target.value)}
-          />
+          <div>
+            <label className="block text-sm font-black uppercase text-black dark:text-white mb-2">
+              Nama Aplikasi
+            </label>
+            <input
+              type="text"
+              value={settings.app_name}
+              onChange={(e) => handleChange('app_name', e.target.value)}
+              className="w-full px-4 py-3 bg-white dark:bg-slate-700 border-4 border-black text-black dark:text-white font-bold focus:outline-none"
+            />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-black uppercase text-black dark:text-white mb-2">
                 Item per Halaman
               </label>
               <select
                 value={settings.items_per_page}
                 onChange={(e) => handleChange('items_per_page', parseInt(e.target.value))}
-                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 bg-white dark:bg-slate-700 border-4 border-black text-black dark:text-white font-bold focus:outline-none"
               >
                 <option value={10}>10</option>
                 <option value={25}>25</option>
@@ -131,13 +138,13 @@ const MaterialSettings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+              <label className="block text-sm font-black uppercase text-black dark:text-white mb-2">
                 Format Tanggal
               </label>
               <select
                 value={settings.date_format}
                 onChange={(e) => handleChange('date_format', e.target.value)}
-                className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 bg-white dark:bg-slate-700 border-4 border-black text-black dark:text-white font-bold focus:outline-none"
               >
                 <option value="dd/MM/yyyy">DD/MM/YYYY</option>
                 <option value="MM/dd/yyyy">MM/DD/YYYY</option>
@@ -146,7 +153,7 @@ const MaterialSettings = () => {
             </div>
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* Notification Settings */}
       <Card>

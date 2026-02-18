@@ -7,7 +7,7 @@ const DarkModeToggle = () => {
   return (
     <button
       onClick={toggleDarkMode}
-      className="relative p-2 rounded-lg transition-all duration-300 hover:scale-110 group"
+      className="relative p-3 border-4 border-black bg-white dark:bg-slate-800 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all rotate-3 hover:rotate-6"
       title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
     >
       <div className="relative w-6 h-6">
@@ -18,6 +18,7 @@ const DarkModeToggle = () => {
               ? 'rotate-90 scale-0 opacity-0'
               : 'rotate-0 scale-100 opacity-100'
           }`}
+          strokeWidth={3}
         />
         
         {/* Moon Icon */}
@@ -27,17 +28,9 @@ const DarkModeToggle = () => {
               ? 'rotate-0 scale-100 opacity-100'
               : '-rotate-90 scale-0 opacity-0'
           }`}
+          strokeWidth={3}
         />
       </div>
-      
-      {/* Glow effect */}
-      <div
-        className={`absolute inset-0 rounded-lg blur-md transition-opacity duration-300 ${
-          isDarkMode
-            ? 'bg-blue-400/20 opacity-100'
-            : 'bg-yellow-400/20 opacity-0 group-hover:opacity-100'
-        }`}
-      ></div>
     </button>
   )
 }
