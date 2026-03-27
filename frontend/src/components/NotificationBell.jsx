@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Bell, Check, Trash2, X } from 'lucide-react'
+import { AlertCircle, AlertTriangle, Bell, Check, CheckCircle2, Info, Trash2, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useNotificationStore } from '../stores/notificationStore'
 
@@ -85,16 +85,17 @@ const NotificationBell = () => {
   }
 
   const getNotificationIcon = (type) => {
+    const iconClassName = 'h-5 w-5 text-black dark:text-white'
     switch (type) {
       case 'success':
-        return '✅'
+        return <CheckCircle2 className={iconClassName} strokeWidth={3} />
       case 'warning':
-        return '⚠️'
+        return <AlertTriangle className={iconClassName} strokeWidth={3} />
       case 'error':
-        return '❌'
+        return <AlertCircle className={iconClassName} strokeWidth={3} />
       case 'info':
       default:
-        return 'ℹ️'
+        return <Info className={iconClassName} strokeWidth={3} />
     }
   }
 
@@ -117,7 +118,7 @@ const NotificationBell = () => {
     <div className="relative" ref={notifMenuRef}>
       <button
         onClick={toggleDropdown}
-        className="relative p-3 border-4 border-black bg-white dark:bg-slate-800 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rotate-3"
+        className="relative p-3 border-4 border-black bg-white dark:bg-slate-800 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
         title="Notifikasi"
       >
         <Bell className="h-5 w-5 text-black dark:text-white" strokeWidth={3} />
@@ -133,7 +134,7 @@ const NotificationBell = () => {
 
       {/* Notifications dropdown */}
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] z-50 max-h-[600px] overflow-hidden flex flex-col -rotate-1">
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-800 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] z-50 max-h-[600px] overflow-hidden flex flex-col">
           {/* Header */}
           <div className="px-4 py-3 border-b-4 border-black bg-gradient-to-r from-yellow-300 to-pink-300 dark:from-slate-700 dark:to-slate-600">
             <div className="flex items-center justify-between">
@@ -197,7 +198,7 @@ const NotificationBell = () => {
                   }`}
                 >
                   <div className="flex items-start space-x-3">
-                    <span className="text-2xl flex-shrink-0 mt-0.5">
+                    <span className="w-9 h-9 border-2 border-black bg-white dark:bg-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
                       {getNotificationIcon(notification.type)}
                     </span>
                     <div className="flex-1 min-w-0">
@@ -215,7 +216,7 @@ const NotificationBell = () => {
                       {!notification.read && (
                         <button
                           onClick={() => handleMarkAsRead(notification.id)}
-                          className="p-1.5 border-2 border-black bg-blue-400 hover:bg-blue-500 transition-colors"
+                          className="p-1.5 border-2 border-black bg-blue-300 hover:bg-blue-400 transition-colors"
                           title="Tandai dibaca"
                         >
                           <Check className="h-3.5 w-3.5 text-black" strokeWidth={3} />
@@ -234,7 +235,7 @@ const NotificationBell = () => {
               ))
             ) : (
               <div className="px-4 py-12 text-center">
-                <div className="w-20 h-20 bg-yellow-300 dark:bg-slate-700 border-4 border-black flex items-center justify-center mx-auto mb-4 -rotate-6">
+                <div className="w-20 h-20 bg-yellow-300 dark:bg-slate-700 border-4 border-black flex items-center justify-center mx-auto mb-4">
                   <Bell className="h-10 w-10 text-black dark:text-white" strokeWidth={3} />
                 </div>
                 <p className="text-sm font-black uppercase text-black dark:text-white">Tidak ada notifikasi</p>
