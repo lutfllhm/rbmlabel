@@ -70,7 +70,11 @@ const ModernSidebar = ({ app = 'material', isOpen, onClose, isCollapsed, onToggl
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between p-4 border-b-4 border-black bg-gradient-to-r from-yellow-300 to-pink-300 dark:from-slate-700 dark:to-slate-600">
+          <div
+            className={`flex items-center border-b-4 border-black bg-gradient-to-r from-yellow-300 to-pink-300 dark:from-slate-700 dark:to-slate-600 ${
+              isCollapsed ? 'justify-center p-2' : 'justify-between p-4'
+            }`}
+          >
             {!isCollapsed && (
               <Link to="/" className="flex items-center space-x-2 group">
                 <div className="w-8 h-8 bg-black border-2 border-black flex items-center justify-center -rotate-6 group-hover:rotate-6 transition-transform">
@@ -83,8 +87,9 @@ const ModernSidebar = ({ app = 'material', isOpen, onClose, isCollapsed, onToggl
             )}
             
             <button
+              type="button"
               onClick={onToggleCollapse}
-              className="hidden lg:block p-2 border-2 border-black bg-white dark:bg-slate-800 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all"
+              className="hidden shrink-0 border-2 border-black bg-white p-2 dark:bg-slate-800 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] lg:block"
             >
               {isCollapsed ? (
                 <ChevronRight className="w-5 h-5 text-black dark:text-white" strokeWidth={3} />
@@ -95,7 +100,11 @@ const ModernSidebar = ({ app = 'material', isOpen, onClose, isCollapsed, onToggl
           </div>
 
           {/* Menu Items */}
-          <nav className="flex-1 overflow-y-auto p-4 space-y-3">
+          <nav
+            className={`flex-1 overflow-y-auto overflow-x-hidden overscroll-contain ${
+              isCollapsed ? 'space-y-2 p-2' : 'space-y-3 p-4'
+            }`}
+          >
             {menuItems[app].map((item, index) => {
               const Icon = item.icon
               const active = isActive(item.path)
@@ -107,18 +116,24 @@ const ModernSidebar = ({ app = 'material', isOpen, onClose, isCollapsed, onToggl
                   to={item.path}
                   onClick={() => onClose()}
                   className={`
-                    flex items-center space-x-3 px-4 py-3 border-4 border-black
-                    transition-all duration-200 group font-black uppercase text-sm
+                    flex items-center border-4 border-black transition-all duration-200 group font-black uppercase text-sm
                     ${active 
                       ? `${appColors[app]} scale-105` 
                       : 'bg-white dark:bg-slate-700 text-black dark:text-white hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]'
                     }
-                    ${isCollapsed ? 'justify-center' : ''}
+                    ${isCollapsed
+                      ? 'min-h-[2.75rem] justify-center px-2 py-2.5'
+                      : 'space-x-3 px-4 py-3'
+                    }
                     ${rotation}
                   `}
                   title={isCollapsed ? item.label : ''}
                 >
-                  <Icon className="w-5 h-5" strokeWidth={3} />
+                  <Icon
+                    className={`shrink-0 ${isCollapsed ? 'h-6 w-6' : 'h-5 w-5'}`}
+                    strokeWidth={3}
+                    aria-hidden
+                  />
                   {!isCollapsed && (
                     <span className="text-sm">{item.label}</span>
                   )}
