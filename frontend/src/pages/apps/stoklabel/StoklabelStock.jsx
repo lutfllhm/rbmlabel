@@ -36,19 +36,29 @@ const StoklabelStock = () => {
 
   useEffect(() => {
     fetchStocks()
+  }, [])
+
+  useEffect(() => {
     if (searchParams.get('action') === 'add') {
       setShowAddModal(true)
-      setSearchParams({})
+      setSearchParams({}, { replace: true })
     }
   }, [searchParams, setSearchParams])
 
   const fetchStocks = async () => {
     try {
       const response = await api.get('/stoklabel/stock')
-      setStocks(response.data)
+      const payload = response.data
+      const list = Array.isArray(payload) ? payload : payload?.data ?? []
+      setStocks(list)
     } catch (error) {
       console.error('Failed to fetch stocks:', error)
-      toast.error('Failed to load stock data')
+      const msg =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        error.message ||
+        'Gagal memuat data stock'
+      toast.error(msg, { id: 'stoklabel-stock-fetch' })
     } finally {
       setLoading(false)
     }

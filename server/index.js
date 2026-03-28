@@ -28,11 +28,17 @@ const io = new Server(server, {
   }
 });
 
-// Rate limiting
+// Rate limiting — global 100/15min was too aggressive for SPA dev + many API calls.
+// In development, skip limiting. In production, default to a higher ceiling (override via env).
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-  message: 'Too many requests from this IP, please try again later.'
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 2000,
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: () =>
+    process.env.NODE_ENV !== 'production' ||
+    process.env.DISABLE_RATE_LIMIT === 'true'
 });
 
 // Middleware
