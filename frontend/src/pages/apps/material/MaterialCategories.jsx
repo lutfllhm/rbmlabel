@@ -118,35 +118,37 @@ const MaterialCategories = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+          <div className="flex min-h-full w-full items-start justify-center px-4 py-8 md:px-6 md:py-10 lg:px-8">
+            <div className="w-full max-w-7xl">
+            <Card className="relative my-auto w-full shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+              <div className="flex items-center justify-between gap-4 border-b-4 border-black bg-white px-5 pt-5 pb-4 dark:bg-slate-800 sm:px-6 sm:pt-6">
+                <h3 className="pr-2 text-xl font-black uppercase tracking-tight text-black dark:text-white sm:text-2xl">
                   {editingCategory ? 'Edit Kategori' : 'Tambah Kategori Baru'}
                 </h3>
                 <button
+                  type="button"
                   onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="shrink-0 border-4 border-black bg-yellow-300 px-3 py-1.5 text-sm font-black uppercase text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] dark:bg-yellow-400"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  Tutup
                 </button>
               </div>
-              
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <Input
-                  label="Nama Kategori"
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="Masukkan nama kategori"
-                  helperText="Nama kategori harus unik dan deskriptif"
-                />
 
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
+              <form onSubmit={handleSubmit} className="px-5 py-5 sm:px-6 sm:py-6">
+                <div className="space-y-5">
+                  <Input
+                    label="Nama Kategori"
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Masukkan nama kategori"
+                    helperText="Nama kategori harus unik dan deskriptif"
+                  />
+                </div>
+
+                <div className="mt-6 flex flex-wrap justify-end gap-3 border-t-4 border-black pt-4">
                   <Button
                     type="button"
                     app="material"
@@ -160,8 +162,9 @@ const MaterialCategories = () => {
                   </Button>
                 </div>
               </form>
+            </Card>
             </div>
-          </Card>
+          </div>
         </div>
       )}
     </div>

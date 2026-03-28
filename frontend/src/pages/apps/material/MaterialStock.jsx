@@ -306,25 +306,26 @@ const MaterialStock = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+          <div className="flex min-h-full w-full items-start justify-center px-4 py-8 md:px-6 md:py-10 lg:px-8">
+            <div className="w-full max-w-7xl">
+            <Card className="relative my-auto flex w-full flex-col shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
+              <div className="flex shrink-0 items-center justify-between gap-4 border-b-4 border-black bg-white px-5 pt-5 pb-4 dark:bg-slate-800 sm:px-6 sm:pt-6">
+                <h3 className="pr-2 text-xl font-black uppercase tracking-tight text-black dark:text-white sm:text-2xl">
                   {editingMaterial ? 'Edit Material' : 'Tambah Material Baru'}
                 </h3>
                 <button
+                  type="button"
                   onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="shrink-0 border-4 border-black bg-yellow-300 px-3 py-1.5 text-sm font-black uppercase text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:bg-yellow-400"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  Tutup
                 </button>
               </div>
-              
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+              <form onSubmit={handleSubmit} className="flex flex-col">
+                <div className="space-y-5 px-5 py-5 sm:px-6 sm:py-6">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 [&>*]:min-w-0">
                   <Input
                     label="No PO"
                     type="text"
@@ -343,7 +344,7 @@ const MaterialStock = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 [&>*]:min-w-0">
                   <Input
                     label="Nama Material"
                     type="text"
@@ -363,14 +364,14 @@ const MaterialStock = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 [&>*]:min-w-0">
+                  <div className="min-w-0">
+                    <label className="mb-2 block text-sm font-black uppercase text-black dark:text-white">
                       Kategori <span className="text-red-500">*</span>
                     </label>
                     <select
                       required
-                      className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
+                      className="w-full border-4 border-black bg-white px-4 py-3 font-bold text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:bg-slate-800 dark:text-white"
                       value={formData.kategori_id}
                       onChange={(e) => setFormData({...formData, kategori_id: e.target.value})}
                     >
@@ -403,8 +404,9 @@ const MaterialStock = () => {
                   placeholder="0"
                   helperText="Masukkan jumlah dalam satuan roll"
                 />
+                </div>
 
-                <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
+                <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t-4 border-black bg-gradient-to-r from-yellow-100 to-pink-100 px-5 py-4 dark:from-slate-800 dark:to-slate-800 sm:px-6">
                   <Button
                     type="button"
                     app="material"
@@ -418,8 +420,9 @@ const MaterialStock = () => {
                   </Button>
                 </div>
               </form>
+            </Card>
             </div>
-          </Card>
+          </div>
         </div>
       )}
     </div>
