@@ -153,18 +153,15 @@ const Sidebar = () => {
   const appColor = getAppColor(user?.app)
 
   return (
-    <div className="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-slate-800 border-r-8 border-black pt-20 shadow-[8px_0_0px_0px_rgba(0,0,0,1)]">
-      <div className="flex flex-col h-full">
-        <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-          <nav className="mt-5 flex-1 px-3 space-y-3">
-            {menuItems.map((item, index) => {
+    <div className="fixed inset-y-0 left-0 z-30 w-64 border-r border-slate-200 bg-white pt-16 dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex h-full flex-col">
+        <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
+          <nav className="mt-5 flex-1 space-y-1 px-3">
+            {menuItems.map((item) => {
               const Icon = item.icon
               const isActive = item.exact 
                 ? location.pathname === item.href
                 : location.pathname.startsWith(item.href)
-
-              // Asymmetric rotation for neo-brutalism
-              const rotation = index % 3 === 0 ? '-rotate-1' : index % 3 === 1 ? 'rotate-1' : 'rotate-0'
 
               return (
                 <NavLink
@@ -172,16 +169,16 @@ const Sidebar = () => {
                   to={item.href}
                   className={({ isActive: navIsActive }) => {
                     const active = item.exact ? navIsActive : isActive
-                    return `group flex items-center px-4 py-3 text-sm font-black uppercase border-4 border-black transition-all ${rotation} ${
+                    return `group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
                       active
-                        ? `${appColor} shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] scale-105`
-                        : 'bg-white dark:bg-slate-700 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]'
+                        ? 'bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900'
+                        : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
                     }`
                   }}
                 >
                   <Icon
-                    className={`mr-3 flex-shrink-0 h-5 w-5 text-black dark:text-white`}
-                    strokeWidth={3}
+                    className="h-5 w-5 flex-shrink-0"
+                    strokeWidth={2}
                   />
                   {item.name}
                 </NavLink>
@@ -191,18 +188,18 @@ const Sidebar = () => {
         </div>
 
         {/* Settings at bottom */}
-        <div className="flex-shrink-0 p-3 border-t-8 border-black bg-gradient-to-r from-yellow-300 to-pink-300 dark:from-slate-700 dark:to-slate-600">
+        <div className="flex-shrink-0 border-t border-slate-200 p-3 dark:border-slate-800">
           <NavLink
             to={`/apps/${user?.app}/settings`}
             className={({ isActive }) =>
-              `group flex items-center px-4 py-3 text-sm font-black uppercase border-4 border-black transition-all rotate-1 ${
+              `group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
                 isActive
-                  ? 'bg-black text-white shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'
-                  : 'bg-white dark:bg-slate-800 text-black dark:text-white hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]'
+                  ? 'bg-slate-900 text-white shadow-sm dark:bg-white dark:text-slate-900'
+                  : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
               }`
             }
           >
-            <Settings className="mr-3 flex-shrink-0 h-5 w-5" strokeWidth={3} />
+            <Settings className="h-5 w-5 flex-shrink-0" strokeWidth={2} />
             Settings
           </NavLink>
         </div>

@@ -1,52 +1,49 @@
-const Button = ({ 
-  children, 
-  variant = 'primary', 
+const Button = ({
+  children,
+  variant = 'primary',
   size = 'md',
   app = 'material',
   className = '',
-  ...props 
+  ...props
 }) => {
-  const getVariantClasses = () => {
-    const baseClasses = {
-      material: {
-        primary: 'bg-blue-400 hover:bg-blue-500 text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        secondary: 'bg-yellow-300 hover:bg-yellow-400 text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        outline: 'bg-white dark:bg-slate-800 text-black dark:text-white border-4 border-black hover:bg-gray-100 dark:hover:bg-slate-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        danger: 'bg-red-500 hover:bg-red-600 text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-      },
-      stoklabel: {
-        primary: 'bg-emerald-400 hover:bg-emerald-500 text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        secondary: 'bg-pink-300 hover:bg-pink-400 text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        outline: 'bg-white dark:bg-slate-800 text-black dark:text-white border-4 border-black hover:bg-gray-100 dark:hover:bg-slate-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        danger: 'bg-red-500 hover:bg-red-600 text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-      },
-      lps: {
-        primary: 'bg-orange-400 hover:bg-orange-500 text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        secondary: 'bg-purple-300 hover:bg-purple-400 text-black border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        outline: 'bg-white dark:bg-slate-800 text-black dark:text-white border-4 border-black hover:bg-gray-100 dark:hover:bg-slate-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-        danger: 'bg-red-500 hover:bg-red-600 text-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px]',
-      }
-    }
-    return baseClasses[app]?.[variant] || baseClasses.material[variant]
+  const accent = {
+    material: {
+      primary: 'bg-material-600 text-white hover:bg-material-700 focus-visible:ring-material-500',
+      secondary: 'bg-slate-100 text-slate-800 hover:bg-slate-200 focus-visible:ring-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
+      outline:
+        'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 focus-visible:ring-slate-400 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500',
+    },
+    stoklabel: {
+      primary: 'bg-stoklabel-600 text-white hover:bg-stoklabel-700 focus-visible:ring-stoklabel-500',
+      secondary: 'bg-emerald-50 text-emerald-900 hover:bg-emerald-100 focus-visible:ring-emerald-500 dark:bg-emerald-950/50 dark:text-emerald-100 dark:hover:bg-emerald-900/40',
+      outline:
+        'border border-emerald-200 bg-white text-emerald-900 hover:bg-emerald-50 focus-visible:ring-emerald-500 dark:border-emerald-800 dark:bg-slate-900 dark:text-emerald-100 dark:hover:bg-emerald-950/30',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500',
+    },
+    lps: {
+      primary: 'bg-lps-600 text-white hover:bg-lps-700 focus-visible:ring-lps-500',
+      secondary: 'bg-violet-50 text-violet-900 hover:bg-violet-100 focus-visible:ring-violet-500 dark:bg-violet-950/40 dark:text-violet-100 dark:hover:bg-violet-900/40',
+      outline:
+        'border border-violet-200 bg-white text-violet-900 hover:bg-violet-50 focus-visible:ring-violet-500 dark:border-violet-800 dark:bg-slate-900 dark:text-violet-100 dark:hover:bg-violet-950/30',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-500',
+    },
   }
+
+  const base =
+    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold shadow-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-50'
 
   const sizes = {
     sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2.5 text-base',
-    lg: 'px-6 py-3 text-lg',
+    md: 'px-4 py-2.5 text-sm',
+    lg: 'px-5 py-3 text-base',
   }
+
+  const styles = accent[app] || accent.material
 
   return (
     <button
-      className={`
-        ${getVariantClasses()}
-        ${sizes[size]}
-        font-black uppercase
-        transition-all duration-200
-        active:translate-x-0 active:translate-y-0 active:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0
-        ${className}
-      `}
+      className={`${base} ${styles[variant] || styles.primary} ${sizes[size]} ${className}`}
       {...props}
     >
       {children}

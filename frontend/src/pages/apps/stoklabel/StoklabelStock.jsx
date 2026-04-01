@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
   Package,
   AlertTriangle,
   CheckCircle,
-  Eye
+  Eye,
 } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Badge from '../../../components/ui/Badge'
 import Input from '../../../components/ui/Input'
@@ -131,34 +133,29 @@ const StoklabelStock = () => {
   )
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-stoklabel-600"></div>
-      </div>
-    )
+    return <PageLoading app="stoklabel" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Stock Management</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Kelola stok label dan inventory</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="stoklabel"
+        eyebrow="Stok"
+        title="Stock label"
+        description="Kelola SKU label, roll, dan status stok rendah / aman."
+      >
         <Button
           app="stoklabel"
           variant="primary"
           onClick={() => setShowAddModal(true)}
-          className="flex items-center"
+          className="gap-2 rounded-xl shadow-lg shadow-stoklabel-600/20"
         >
-          <Plus className="h-4 w-4 mr-2" />
-          Tambah Stock
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Tambah stok
         </Button>
-      </div>
+      </AppPageHero>
 
-      {/* Search and Filter */}
-      <Card className="p-6">
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-500 h-4 w-4" />
@@ -177,11 +174,10 @@ const StoklabelStock = () => {
         </div>
       </Card>
 
-      {/* Stock Table */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/25 dark:ring-white/[0.04]">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead className="bg-gray-50 dark:bg-slate-800">
+          <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+            <thead className="bg-gradient-to-r from-slate-50 to-slate-100/90 dark:from-slate-800 dark:to-slate-800/95">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                   Part Number
@@ -209,13 +205,13 @@ const StoklabelStock = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900/50">
               {filteredStocks.map((stock) => {
                 const stockStatus = getStockStatus(stock.jumlah_roll)
                 const StatusIcon = stockStatus.icon
-                
+
                 return (
-                  <tr key={stock.id} className="hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+                  <tr key={stock.id} className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/60">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-stoklabel-100 dark:bg-stoklabel-900/20 rounded-lg flex items-center justify-center mr-3">

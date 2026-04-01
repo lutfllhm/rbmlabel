@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Save } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
 import Button from '../../../components/ui/Button'
 import Input from '../../../components/ui/Input'
@@ -67,27 +68,25 @@ const LpsCreate = () => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <button
-            onClick={() => navigate('/apps/lps/list')}
-            className="flex items-center text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 mr-1" />
-            Kembali
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Buat LPS Baru</h1>
-            <p className="text-gray-600 dark:text-slate-400 mt-1">Tambah laporan produksi selesai baru</p>
-          </div>
-        </div>
-      </div>
+    <div className="space-y-8">
+      <button
+        type="button"
+        onClick={() => navigate('/apps/lps/list')}
+        className="inline-flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+      >
+        <ArrowLeft className="h-4 w-4" strokeWidth={2} />
+        Kembali ke daftar
+      </button>
 
-      {/* Form */}
-      <Card>
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+      <AppPageHero
+        app="lps"
+        eyebrow="Entri baru"
+        title="Buat LPS"
+        description="Isi data produksi selesai — nomor LPS bisa digenerate otomatis."
+      />
+
+      <Card className="shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+        <form onSubmit={handleSubmit} className="space-y-6 p-6 sm:p-8">
           {/* Basic Information */}
           <div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Informasi Dasar</h2>

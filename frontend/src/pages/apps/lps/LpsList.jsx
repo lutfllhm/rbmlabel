@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Edit,
+  Trash2,
   Eye,
   CheckCircle,
   Clock,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import api from '../../../services/api'
 import toast from 'react-hot-toast'
@@ -140,31 +142,26 @@ const LpsList = () => {
   })
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-lps-600"></div>
-      </div>
-    )
+    return <PageLoading app="lps" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Daftar LPS</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Kelola laporan produksi selesai</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="lps"
+        eyebrow="Produksi"
+        title="Daftar LPS"
+        description="Cari, filter status, dan kelola laporan produksi selesai."
+      >
         <Link to="/apps/lps/create">
-          <Button app="lps" variant="primary" className="flex items-center">
-            <Plus className="w-4 h-4 mr-2" />
+          <Button app="lps" variant="primary" className="gap-2 rounded-xl shadow-lg shadow-lps-600/25">
+            <Plus className="h-4 w-4" strokeWidth={2} />
             Tambah LPS
           </Button>
         </Link>
-      </div>
+      </AppPageHero>
 
-      {/* Filters */}
-      <Card className="p-6">
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -194,11 +191,10 @@ const LpsList = () => {
         </div>
       </Card>
 
-      {/* Table */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/25 dark:ring-white/[0.04]">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead className="bg-gray-50 dark:bg-slate-800">
+          <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+            <thead className="bg-gradient-to-r from-slate-50 to-slate-100/90 dark:from-slate-800 dark:to-slate-800/95">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                   No LPS
@@ -223,10 +219,10 @@ const LpsList = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900/50">
               {filteredData.length > 0 ? (
                 filteredData.map((lps) => (
-                  <tr key={lps.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors duration-150">
+                  <tr key={lps.id} className="transition-colors duration-150 hover:bg-slate-50/90 dark:hover:bg-slate-800/60">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                       {lps.no_lps}
                     </td>

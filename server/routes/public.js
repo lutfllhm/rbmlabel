@@ -1,5 +1,5 @@
 const express = require('express');
-const { materialPool, stoklabelPool, lpsPool } = require('../config/database');
+const { pool } = require('../config/database');
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/dashboard', async (req, res, next) => {
   try {
     // Get summary data from all applications
-    const [materialStats] = await materialPool.execute(`
+    const [materialStats] = await pool.execute(`
       SELECT 
         COUNT(*) as total_materials,
         SUM(jumlah_roll) as total_rolls,
@@ -15,21 +15,21 @@ router.get('/dashboard', async (req, res, next) => {
       FROM material_stock
     `);
 
-    const [spkStats] = await materialPool.execute(`
+    const [spkStats] = await pool.execute(`
       SELECT 
         COUNT(*) as total_spk,
         COUNT(CASE WHEN created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 END) as spk_this_month
-      FROM spk
+      FROM material_spk
     `);
 
-    const [labelStats] = await stoklabelPool.execute(`
+    const [labelStats] = await pool.execute(`
       SELECT 
         COUNT(*) as total_labels,
         SUM(jumlah_roll) as total_label_rolls
       FROM stok_label
     `);
 
-    const [lpsStats] = await lpsPool.execute(`
+    const [lpsStats] = await pool.execute(`
       SELECT 
         COUNT(*) as total_lps,
         COUNT(CASE WHEN status = 'finish' THEN 1 END) as finished_lps,
@@ -38,14 +38,14 @@ router.get('/dashboard', async (req, res, next) => {
     `);
 
     // Recent activities
-    const [recentSpk] = await materialPool.execute(`
+    const [recentSpk] = await pool.execute(`
       SELECT no_spk, part_number, nama_item, customer, created_at
-      FROM spk 
+      FROM material_spk 
       ORDER BY created_at DESC 
       LIMIT 5
     `);
 
-    const [recentLps] = await lpsPool.execute(`
+    const [recentLps] = await pool.execute(`
       SELECT no_lps, nama_item, customer, status, created_at
       FROM lps 
       ORDER BY created_at DESC 
@@ -72,7 +72,7 @@ router.get('/dashboard', async (req, res, next) => {
 // Public API for getting label data (used by other apps)
 router.get('/labels', async (req, res, next) => {
   try {
-    const [rows] = await stoklabelPool.execute(`
+    const [rows] = await pool.execute(`
       SELECT part_number, nama_item, ukuran, finishing, isi, jumlah_roll
       FROM stok_label
       ORDER BY nama_item
@@ -87,7 +87,7 @@ router.get('/labels', async (req, res, next) => {
 // Public API for getting material categories
 router.get('/material-categories', async (req, res, next) => {
   try {
-    const [rows] = await materialPool.execute(`
+    const [rows] = await pool.execute(`
       SELECT id, name
       FROM material_categories
       ORDER BY name

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, Archive } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Input from '../../../components/ui/Input'
 import api from '../../../services/api'
@@ -50,20 +52,17 @@ const MaterialCategories = () => {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-material-600"></div>
-      </div>
-    )
+    return <PageLoading app="material" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Kategori Material</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Kelola kategori material</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="material"
+        eyebrow="Master data"
+        title="Kategori material"
+        description="Kelompokkan material agar filter dan laporan lebih rapi."
+      >
         <Button
           app="material"
           variant="primary"
@@ -72,25 +71,28 @@ const MaterialCategories = () => {
             setFormData({ name: '' })
             setShowModal(true)
           }}
-          className="flex items-center"
+          className="gap-2 rounded-xl shadow-lg shadow-material-600/15"
         >
-          <Plus className="h-4 w-4 mr-2" />
-          Tambah Kategori
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Tambah kategori
         </Button>
-      </div>
+      </AppPageHero>
 
-      <Card className="overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+        <div className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
-            <div key={category.id} className="border-2 border-gray-200 dark:border-slate-700 rounded-xl p-5 hover:border-material-300 dark:hover:border-material-600 hover:shadow-lg transition-all group bg-white dark:bg-slate-800">
+            <div
+              key={category.id}
+              className="group rounded-2xl border border-slate-200/90 bg-white p-5 transition-all hover:border-material-300/80 hover:shadow-lg hover:shadow-slate-200/30 dark:border-slate-700 dark:bg-slate-900/40 dark:hover:border-material-600/50 dark:hover:shadow-black/20"
+            >
               <div className="flex items-center justify-between">
-                <div className="flex items-center flex-1">
-                  <div className="w-12 h-12 bg-material-100 dark:bg-material-900/20 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                    <Archive className="h-6 w-6 text-material-600 dark:text-material-400" />
+                <div className="flex flex-1 items-center">
+                  <div className="mr-4 flex h-12 w-12 items-center justify-center rounded-xl bg-material-100 transition-transform group-hover:scale-105 dark:bg-material-950/40">
+                    <Archive className="h-6 w-6 text-material-600 dark:text-material-400" strokeWidth={2} />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white">{category.name}</h3>
-                    <p className="text-sm text-gray-500 dark:text-slate-400">Kategori</p>
+                    <h3 className="font-semibold text-slate-900 dark:text-white">{category.name}</h3>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Kategori</p>
                   </div>
                 </div>
                 <button
@@ -121,15 +123,15 @@ const MaterialCategories = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
           <div className="flex min-h-full w-full items-start justify-center px-4 py-8 md:px-6 md:py-10 lg:px-8">
             <div className="w-full max-w-7xl">
-            <Card className="relative my-auto w-full shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-              <div className="flex items-center justify-between gap-4 border-b-4 border-black bg-white px-5 pt-5 pb-4 dark:bg-slate-800 sm:px-6 sm:pt-6">
-                <h3 className="pr-2 text-xl font-black uppercase tracking-tight text-black dark:text-white sm:text-2xl">
-                  {editingCategory ? 'Edit Kategori' : 'Tambah Kategori Baru'}
+            <Card className="relative my-auto w-full shadow-xl dark:shadow-black/20">
+              <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-slate-50/80 px-5 pt-5 pb-4 dark:border-slate-800 dark:bg-slate-800/50 sm:px-6 sm:pt-6">
+                <h3 className="pr-2 text-lg font-semibold tracking-tight text-slate-900 dark:text-white sm:text-xl">
+                  {editingCategory ? 'Edit kategori' : 'Tambah kategori baru'}
                 </h3>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="shrink-0 border-4 border-black bg-yellow-300 px-3 py-1.5 text-sm font-black uppercase text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] dark:bg-yellow-400"
+                  className="shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
                   Tutup
                 </button>
@@ -148,7 +150,7 @@ const MaterialCategories = () => {
                   />
                 </div>
 
-                <div className="mt-6 flex flex-wrap justify-end gap-3 border-t-4 border-black pt-4">
+                <div className="mt-6 flex flex-wrap justify-end gap-3 border-t border-slate-200 pt-4 dark:border-slate-800">
                   <Button
                     type="button"
                     app="material"

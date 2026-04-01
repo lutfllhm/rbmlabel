@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react'
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash2,
   User,
   Mail,
   Shield,
   CheckCircle,
-  XCircle
+  XCircle,
 } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Badge from '../../../components/ui/Badge'
 import Input from '../../../components/ui/Input'
+import Select from '../../../components/ui/Select'
+import Modal from '../../../components/ui/Modal'
 import api from '../../../services/api'
 import toast from 'react-hot-toast'
 
@@ -119,91 +123,89 @@ const MaterialUsers = () => {
   )
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-material-600"></div>
-      </div>
-    )
+    return <PageLoading app="material" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Manajemen Pengguna</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Kelola pengguna aplikasi Material</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="material"
+        eyebrow="Tim"
+        title="Manajemen pengguna"
+        description="Kelola akun, peran, dan status aktif untuk modul Material."
+      >
         <Button
           app="material"
           variant="primary"
           onClick={() => openModal('create')}
-          className="flex items-center"
+          className="gap-2 rounded-xl shadow-lg shadow-material-600/15"
         >
-          <Plus className="w-4 h-4 mr-2" />
-          Tambah Pengguna
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Tambah pengguna
         </Button>
-      </div>
+      </AppPageHero>
 
-      {/* Search */}
-      <Card className="p-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-500 w-4 h-4" />
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+            Cari Pengguna
+          </label>
           <input
             type="text"
             placeholder="Cari berdasarkan username atau email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-material-500 focus:outline-none focus:ring-2 focus:ring-material-500/20 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-500 dark:focus:border-material-400"
           />
         </div>
       </Card>
 
-      {/* Users Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden border border-gray-200 dark:border-slate-700">
+      <Card className="overflow-hidden p-0 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/25 dark:ring-white/[0.04]">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead className="bg-gray-50 dark:bg-slate-900">
+          <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+            <thead className="bg-gradient-to-r from-slate-50 to-slate-100/90 dark:from-slate-800 dark:to-slate-800/95">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Username
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Email
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Role
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Status
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
-                  Actions
+                <th className="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                  Aksi
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900/50">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                <tr key={user.id} className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/60">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <User className="h-4 w-4 text-gray-400 dark:text-slate-500 mr-2" />
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">{user.username}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-material-100 text-material-600 dark:bg-material-950/50 dark:text-material-400">
+                        <User className="h-4 w-4" strokeWidth={2} />
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white">{user.username}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <Mail className="h-4 w-4 text-gray-400 dark:text-slate-500 mr-2" />
-                      <span className="text-sm text-gray-900 dark:text-white">{user.email}</span>
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-slate-400 dark:text-slate-500" strokeWidth={2} />
+                      <span className="text-sm text-slate-600 dark:text-slate-300">{user.email}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <Shield className="h-4 w-4 text-gray-400 mr-2" />
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    <div className="flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-slate-400 dark:text-slate-500" strokeWidth={2} />
+                      <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
                         user.role === 'admin' 
-                          ? 'bg-purple-100 text-purple-800' 
-                          : 'bg-blue-100 text-blue-800'
+                          ? 'bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300' 
+                          : 'bg-sky-100 text-sky-700 dark:bg-sky-950/50 dark:text-sky-300'
                       }`}>
                         {user.role}
                       </span>
@@ -211,35 +213,35 @@ const MaterialUsers = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {user.is_active ? (
-                      <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Active
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+                        <CheckCircle className="h-3 w-3" strokeWidth={2} />
+                        Aktif
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                        <XCircle className="w-3 h-3 mr-1" />
-                        Inactive
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700 dark:bg-red-950/50 dark:text-red-300">
+                        <XCircle className="h-3 w-3" strokeWidth={2} />
+                        Nonaktif
                       </span>
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end space-x-2">
+                    <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => openModal('edit', user)}
-                        className="text-primary-600 hover:text-primary-900"
+                        className="rounded-lg p-2 text-material-600 transition hover:bg-material-50 dark:text-material-400 dark:hover:bg-material-950/30"
                         title="Edit"
                       >
-                        <Edit className="h-4 w-4" />
+                        <Edit className="h-4 w-4" strokeWidth={2} />
                       </button>
                       <button
                         onClick={() => {
                           setSelectedUser(user)
                           setShowDeleteModal(true)
                         }}
-                        className="text-red-600 hover:text-red-900"
-                        title="Delete"
+                        className="rounded-lg p-2 text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                        title="Hapus"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" strokeWidth={2} />
                       </button>
                     </div>
                   </td>
@@ -250,154 +252,138 @@ const MaterialUsers = () => {
         </div>
 
         {filteredUsers.length === 0 && (
-          <div className="text-center py-12">
-            <User className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">Tidak ada pengguna ditemukan</p>
+          <div className="py-12 text-center">
+            <User className="mx-auto mb-3 h-12 w-12 text-slate-300 dark:text-slate-600" />
+            <p className="text-slate-500 dark:text-slate-400">Tidak ada pengguna ditemukan</p>
           </div>
         )}
-      </div>
+      </Card>
 
-      {/* Create/Edit Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {modalMode === 'create' ? 'Tambah Pengguna Baru' : 'Edit Pengguna'}
-              </h2>
-              <button
-                onClick={() => {
-                  setShowModal(false)
-                  resetForm()
-                }}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false)
+          resetForm()
+        }}
+        title={modalMode === 'create' ? 'Tambah pengguna baru' : 'Edit pengguna'}
+        size="sm"
+        icon={modalMode === 'create' ? Plus : Edit}
+      >
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-4">
+            <Input
+              label="Username"
+              type="text"
+              required
+              value={formData.username}
+              onChange={(e) => setFormData({...formData, username: e.target.value})}
+              placeholder="Masukkan username"
+            />
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <Input
-                label="Username"
-                type="text"
-                required
-                value={formData.username}
-                onChange={(e) => setFormData({...formData, username: e.target.value})}
-                placeholder="Masukkan username"
+            <Input
+              label="Email"
+              type="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              placeholder="email@example.com"
+            />
+
+            <Input
+              label={modalMode === 'edit' ? 'Password (kosongkan jika tidak ingin mengubah)' : 'Password'}
+              type="password"
+              required={modalMode === 'create'}
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              placeholder="Masukkan password"
+              helperText={modalMode === 'edit' ? 'Biarkan kosong untuk mempertahankan password lama' : 'Minimal 6 karakter'}
+            />
+
+            <Select
+              label="Role"
+              required
+              value={formData.role}
+              onChange={(e) => setFormData({...formData, role: e.target.value})}
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </Select>
+
+            <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/40 dark:hover:bg-slate-800/60">
+              <input
+                type="checkbox"
+                id="is_active"
+                checked={formData.is_active}
+                onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                className="mt-0.5 h-4 w-4 rounded border-slate-300 text-material-600 transition focus:ring-2 focus:ring-material-500/20 dark:border-slate-600"
               />
-
-              <Input
-                label="Email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                placeholder="email@example.com"
-              />
-
-              <Input
-                label={modalMode === 'edit' ? 'Password (kosongkan jika tidak ingin mengubah)' : 'Password'}
-                type="password"
-                required={modalMode === 'create'}
-                value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
-                placeholder="Masukkan password"
-                helperText={modalMode === 'edit' ? 'Biarkan kosong untuk mempertahankan password lama' : 'Minimal 6 karakter'}
-              />
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
-                  Role <span className="text-red-500">*</span>
-                </label>
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({...formData, role: e.target.value})}
-                  className="w-full px-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200 hover:border-gray-400 dark:hover:border-slate-500"
-                  required
-                >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
-                </select>
-              </div>
-
-              <div className="flex items-center p-4 bg-gray-50 dark:bg-slate-900/50 rounded-lg">
-                <input
-                  type="checkbox"
-                  id="is_active"
-                  checked={formData.is_active}
-                  onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
-                  className="w-4 h-4 rounded border-gray-300 dark:border-slate-600 text-material-600 focus:ring-material-500"
-                />
-                <label htmlFor="is_active" className="ml-3 text-sm font-medium text-gray-700 dark:text-slate-300">
+              <div className="flex-1">
+                <label htmlFor="is_active" className="block cursor-pointer text-sm font-semibold text-slate-700 dark:text-slate-300">
                   Akun Aktif
                 </label>
+                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  Pengguna dapat login dan mengakses sistem
+                </p>
               </div>
-
-              <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
-                <Button
-                  type="button"
-                  app="material"
-                  variant="secondary"
-                  onClick={() => {
-                    setShowModal(false)
-                    resetForm()
-                  }}
-                >
-                  Batal
-                </Button>
-                <Button
-                  type="submit"
-                  app="material"
-                  variant="primary"
-                >
-                  {modalMode === 'create' ? 'Tambah Pengguna' : 'Update Pengguna'}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
-            <div className="flex items-center mb-6">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <Trash2 className="h-6 w-6 text-red-600 dark:text-red-400" />
-              </div>
-              <h3 className="ml-4 text-xl font-bold text-gray-900 dark:text-white">
-                Hapus Pengguna
-              </h3>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-slate-400 mb-6">
-              Apakah Anda yakin ingin menghapus pengguna <strong className="text-gray-900 dark:text-white">{selectedUser?.username}</strong>? 
-              Tindakan ini tidak dapat dibatalkan.
-            </p>
-            <div className="flex justify-end gap-3">
-              <Button
-                app="material"
-                variant="secondary"
-                onClick={() => {
-                  setShowDeleteModal(false)
-                  setSelectedUser(null)
-                }}
-              >
-                Batal
-              </Button>
-              <Button
-                app="material"
-                variant="danger"
-                onClick={handleDelete}
-              >
-                Hapus Pengguna
-              </Button>
             </div>
           </div>
+
+          <div className="flex justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-700">
+            <Button
+              type="button"
+              app="material"
+              variant="secondary"
+              onClick={() => {
+                setShowModal(false)
+                resetForm()
+              }}
+            >
+              Batal
+            </Button>
+            <Button
+              type="submit"
+              app="material"
+              variant="primary"
+            >
+              {modalMode === 'create' ? 'Tambah pengguna' : 'Perbarui pengguna'}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false)
+          setSelectedUser(null)
+        }}
+        title="Hapus pengguna"
+        size="sm"
+      >
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/35">
+            <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" strokeWidth={2} />
+          </div>
+          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            Hapus <strong className="text-slate-900 dark:text-white">{selectedUser?.username}</strong>? Tindakan ini tidak dapat dibatalkan.
+          </p>
         </div>
-      )}
+        <div className="flex justify-end gap-3">
+          <Button
+            app="material"
+            variant="secondary"
+            onClick={() => {
+              setShowDeleteModal(false)
+              setSelectedUser(null)
+            }}
+          >
+            Batal
+          </Button>
+          <Button app="material" variant="danger" onClick={handleDelete}>
+            Hapus
+          </Button>
+        </div>
+      </Modal>
     </div>
   )
 }

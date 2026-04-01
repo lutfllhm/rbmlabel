@@ -432,3 +432,212 @@ router.get('/users', requireRole(['admin']), async (req, res, next) => {
 });
 
 module.exports = router;
+
+// ============================================
+// INTEGRATION ENDPOINTS
+// ============================================
+
+// Get LPS details for label masuk
+router.get('/masuk/:id/lps-details', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get label masuk
+    const [labelMasuk] = await pool.execute(
+      'SELECT * FROM stok_label_masuk WHERE id = ?',
+      [id]
+    );
+
+    if (labelMasuk.length === 0) {
+      return res.status(404).json({ error: 'Label masuk not found' });
+    }
+
+    const masuk = labelMasuk[0];
+
+    // Get LPS if exists
+    let lpsData = null;
+    if (masuk.no_lps) {
+      const [lps] = await pool.execute(`
+        SELECT 
+          l.*,
+          lf.tanggal_finish,
+          u.full_name as verified_by_name
+        FROM lps l
+        LEFT JOIN lps_label_finish lf ON l.id = lf.lps_id
+        LEFT JOIN users u ON lf.verified_by = u.id
+        WHERE l.no_lps = ?
+      `, [masuk.no_lps]);
+      lpsData = lps[0] || null;
+    }
+
+    res.json({
+      label_masuk: masuk,
+      lps: lpsData,
+      has_lps: lpsData !== null
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get SPK details for label masuk
+router.get('/masuk/:id/spk-details', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get label masuk
+    const [labelMasuk] = await pool.execute(
+      'SELECT * FROM stok_label_masuk WHERE id = ?',
+      [id]
+    );
+
+    if (labelMasuk.length === 0) {
+      return res.status(404).json({ error: 'Label masuk not found' });
+    }
+
+    const masuk = labelMasuk[0];
+
+    // Get SPK if exists
+    let spkData = null;
+    if (masuk.no_spk) {
+      const [spk] = await pool.execute(`
+        SELECT 
+          s.*,
+          m.nama_material, m.ukuran as material_ukuran, m.supplier
+        FROM material_spk s
+        LEFT JOIN material_stock m ON s.material_id = m.id
+        WHERE s.no_spk = ?
+      `, [masuk.no_spk]);
+      spkData = spk[0] || null;
+    }
+
+    res.json({
+      label_masuk: masuk,
+      spk: spkData,
+      has_spk: spkData !== null
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get full integration data for label masuk
+router.get('/masuk/:id/full', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get label masuk
+    const [labelMasuk] = await pool.execute(
+      'SELECT * FROM stok_label_masuk WHERE id = ?',
+      [id]
+    );
+
+    if (labelMasuk.length === 0) {
+      return res.status(404).json({ error: 'Label masuk not found' });
+    }
+
+    const masuk = labelMasuk[0];
+
+    // Get SPK if exists
+    let spkData = null;
+    if (masuk.no_spk) {
+      const [spk] = await pool.execute(`
+        SELECT 
+          s.*,
+          m.nama_material, m.ukuran as material_ukuran, m.supplier
+        FROM material_spk s
+        LEFT JOIN material_stock m ON s.material_id = m.id
+        WHERE s.no_spk = ?
+      `, [masuk.no_spk]);
+      spkData = spk[0] || null;
+    }
+
+    // Get LPS if exists
+    let lpsData = null;
+    if (masuk.no_lps) {
+      const [lps] = await pool.execute(`
+        SELECT 
+          l.*,
+          lf.tanggal_finish,
+          u.full_name as verified_by_name
+        FROM lps l
+        LEFT JOIN lps_label_finish lf ON l.id = lf.lps_id
+        LEFT JOIN users u ON lf.verified_by = u.id
+        WHERE l.no_lps = ?
+      `, [masuk.no_lps]);
+      lpsData = lps[0] || null;
+    }
+
+    // Get current stock
+    const [currentStock] = await pool.execute(
+      'SELECT * FROM stok_label WHERE part_number = ?',
+      [masuk.part_number]
+    );
+
+    // Get label keluar for this part
+    const [labelKeluar] = await pool.execute(
+      'SELECT * FROM stok_label_keluar WHERE part_number = ? ORDER BY created_at DESC LIMIT 5',
+      [masuk.part_number]
+    );
+
+    res.json({
+      label_masuk: masuk,
+      spk: spkData,
+      lps: lpsData,
+      current_stock: currentStock[0] || null,
+      recent_keluar: labelKeluar,
+      integration_status: {
+        has_spk: spkData !== null,
+        has_lps: lpsData !== null,
+        in_stock: currentStock.length > 0,
+        has_shipments: labelKeluar.length > 0
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get shipment history for a part number
+router.get('/part/:part_number/history', async (req, res, next) => {
+  try {
+    const { part_number } = req.params;
+
+    // Get all label masuk
+    const [masuk] = await pool.execute(
+      'SELECT * FROM stok_label_masuk WHERE part_number = ? ORDER BY tanggal DESC',
+      [part_number]
+    );
+
+    // Get all label keluar
+    const [keluar] = await pool.execute(
+      'SELECT * FROM stok_label_keluar WHERE part_number = ? ORDER BY tanggal DESC',
+      [part_number]
+    );
+
+    // Get current stock
+    const [stock] = await pool.execute(
+      'SELECT * FROM stok_label WHERE part_number = ?',
+      [part_number]
+    );
+
+    // Calculate totals
+    const totalMasuk = masuk.length;
+    const totalKeluar = keluar.length;
+    const currentRoll = stock[0]?.jumlah_roll || 0;
+
+    res.json({
+      part_number,
+      current_stock: stock[0] || null,
+      masuk_history: masuk,
+      keluar_history: keluar,
+      statistics: {
+        total_masuk: totalMasuk,
+        total_keluar: totalKeluar,
+        current_roll: currentRoll
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});

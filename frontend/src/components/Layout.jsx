@@ -4,12 +4,12 @@ import Sidebar from './Sidebar'
 
 const Layout = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-200 via-pink-200 to-blue-200 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <Navbar />
-      <div className="flex pt-20">
+      <div className="flex">
         <Sidebar />
-        <main className="flex-1 ml-64 p-6 min-h-screen">
-          <div className="max-w-7xl mx-auto">
+        <main className="ml-64 flex-1 pt-16">
+          <div className="mx-auto max-w-7xl p-6">
             <Outlet />
           </div>
         </main>

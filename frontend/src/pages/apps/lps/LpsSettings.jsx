@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react'
-import { 
-  Save, 
+import {
+  Save,
   Settings as SettingsIcon,
   Bell,
   Database,
   Shield,
-  Mail,
-  CheckCircle
+  CheckCircle,
 } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Input from '../../../components/ui/Input'
 import api from '../../../services/api'
 import toast from 'react-hot-toast'
 
 const LpsSettings = () => {
+  const [initialLoad, setInitialLoad] = useState(true)
   const [loading, setLoading] = useState(false)
   const [settings, setSettings] = useState({
     // General Settings
@@ -50,6 +52,8 @@ const LpsSettings = () => {
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error)
+    } finally {
+      setInitialLoad(false)
     }
   }
 
@@ -73,35 +77,41 @@ const LpsSettings = () => {
     }))
   }
 
+  const shell =
+    'overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]'
+
+  if (initialLoad) {
+    return <PageLoading app="lps" label="Memuat pengaturan…" />
+  }
+
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Pengaturan</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Konfigurasi aplikasi LPS Management</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="lps"
+        eyebrow="Sistem"
+        title="Pengaturan LPS"
+        description="Konfigurasi umum, notifikasi, keamanan, dan cadangan untuk modul LPS."
+      >
         <Button
           app="lps"
           variant="primary"
           onClick={handleSave}
           disabled={loading}
-          className="flex items-center"
+          className="gap-2 rounded-xl shadow-lg shadow-lps-600/25"
         >
           {loading ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
           ) : (
-            <Save className="w-4 h-4 mr-2" />
+            <Save className="h-4 w-4" strokeWidth={2} />
           )}
-          {loading ? 'Menyimpan...' : 'Simpan Pengaturan'}
+          {loading ? 'Menyimpan…' : 'Simpan pengaturan'}
         </Button>
-      </div>
+      </AppPageHero>
 
-      {/* General Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <Card className={shell}>
+        <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white p-6 dark:border-slate-700 dark:from-slate-800/40 dark:to-slate-900/40">
           <div className="flex items-center">
-            <SettingsIcon className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
+            <SettingsIcon className="mr-2 h-5 w-5 text-slate-500 dark:text-slate-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Pengaturan Umum</h2>
           </div>
         </div>
@@ -148,11 +158,10 @@ const LpsSettings = () => {
         </div>
       </Card>
 
-      {/* Notification Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <Card className={shell}>
+        <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white p-6 dark:border-slate-700 dark:from-slate-800/40 dark:to-slate-900/40">
           <div className="flex items-center">
-            <Bell className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
+            <Bell className="mr-2 h-5 w-5 text-slate-500 dark:text-slate-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notifikasi</h2>
           </div>
         </div>
@@ -207,11 +216,10 @@ const LpsSettings = () => {
         </div>
       </Card>
 
-      {/* Security Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <Card className={shell}>
+        <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white p-6 dark:border-slate-700 dark:from-slate-800/40 dark:to-slate-900/40">
           <div className="flex items-center">
-            <Shield className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
+            <Shield className="mr-2 h-5 w-5 text-slate-500 dark:text-slate-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Keamanan</h2>
           </div>
         </div>
@@ -252,11 +260,10 @@ const LpsSettings = () => {
         </div>
       </Card>
 
-      {/* Database Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <Card className={shell}>
+        <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white p-6 dark:border-slate-700 dark:from-slate-800/40 dark:to-slate-900/40">
           <div className="flex items-center">
-            <Database className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
+            <Database className="mr-2 h-5 w-5 text-slate-500 dark:text-slate-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Database</h2>
           </div>
         </div>
@@ -309,13 +316,12 @@ const LpsSettings = () => {
         </div>
       </Card>
 
-      {/* Info Box */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+      <div className="rounded-xl border border-blue-200/80 bg-blue-50/90 p-4 shadow-sm ring-1 ring-blue-100/60 dark:border-blue-800/60 dark:bg-blue-950/30 dark:ring-blue-900/40">
         <div className="flex items-start">
-          <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 mr-2 mt-0.5 flex-shrink-0" />
+          <CheckCircle className="mr-2 mt-0.5 h-5 w-5 flex-shrink-0 text-blue-600 dark:text-blue-400" />
           <div>
-            <h3 className="text-sm font-medium text-blue-900 dark:text-blue-300 mb-1">Informasi</h3>
-            <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
+            <h3 className="mb-1 text-sm font-medium text-blue-900 dark:text-blue-300">Informasi</h3>
+            <ul className="space-y-1 text-sm text-blue-800 dark:text-blue-400">
               <li>• Perubahan pengaturan akan diterapkan segera setelah disimpan</li>
               <li>• Beberapa pengaturan mungkin memerlukan refresh halaman</li>
               <li>• Backup database disimpan di server secara otomatis</li>

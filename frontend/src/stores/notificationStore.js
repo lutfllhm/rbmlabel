@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import api from '../services/api'
 import { mockNotifications } from '../utils/mockNotifications'
+import socketService from '../services/socket'
+import toast from 'react-hot-toast'
 
 export const useNotificationStore = create(
   persist(
@@ -12,6 +14,81 @@ export const useNotificationStore = create(
       useMockData: false,
       lastFetch: null,
       showDropdown: false,
+      socketConnected: false,
+
+      // Initialize Socket.io connection
+      initializeSocket: (userId, app) => {
+        try {
+          // Get token from localStorage
+          const token = localStorage.getItem('token')
+          if (!token) return
+
+          // Connect to socket
+          socketService.connect(token)
+
+          // Join user-specific room
+          socketService.joinRoom(`user:${userId}`)
+          
+          // Join app-specific room
+          if (app) {
+            socketService.joinRoom(`app:${app}`)
+          }
+
+          // Listen for new notifications
+          socketService.on('notification:new', (notification) => {
+            console.log('📬 New notification received:', notification)
+            
+            const { notifications } = get()
+            set({
+              notifications: [notification, ...notifications],
+              unreadCount: get().unreadCount + 1
+            })
+
+            // Show toast notification
+            toast.success(notification.title, {
+              duration: 4000,
+              icon: '🔔'
+            })
+          })
+
+          // Listen for notification updates
+          socketService.on('notification:update', (updatedNotification) => {
+            console.log('📝 Notification updated:', updatedNotification)
+            
+            const { notifications } = get()
+            const updatedNotifications = notifications.map(n =>
+              n.id === updatedNotification.id ? updatedNotification : n
+            )
+            set({
+              notifications: updatedNotifications,
+              unreadCount: updatedNotifications.filter(n => !n.read).length
+            })
+          })
+
+          // Listen for notification deletions
+          socketService.on('notification:delete', (notificationId) => {
+            console.log('🗑️ Notification deleted:', notificationId)
+            
+            const { notifications } = get()
+            const updatedNotifications = notifications.filter(n => n.id !== notificationId)
+            set({
+              notifications: updatedNotifications,
+              unreadCount: updatedNotifications.filter(n => !n.read).length
+            })
+          })
+
+          set({ socketConnected: true })
+          console.log('✅ Socket.io initialized for notifications')
+        } catch (error) {
+          console.error('❌ Failed to initialize socket:', error)
+        }
+      },
+
+      // Disconnect socket
+      disconnectSocket: () => {
+        socketService.disconnect()
+        set({ socketConnected: false })
+      },
 
       // Toggle dropdown visibility
       toggleDropdown: () => {

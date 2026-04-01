@@ -1,20 +1,29 @@
 const Card = ({ children, className = '', hover = false, variant = 'default' }) => {
   const variants = {
-    default: 'bg-white dark:bg-slate-800 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
-    yellow: 'bg-yellow-300 dark:bg-yellow-400 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
-    blue: 'bg-blue-400 dark:bg-blue-500 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
-    green: 'bg-emerald-400 dark:bg-emerald-500 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
-    orange: 'bg-orange-400 dark:bg-orange-500 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
-    pink: 'bg-pink-400 dark:bg-pink-500 border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
+    default:
+      'rounded-2xl border border-slate-200/80 bg-white/95 shadow-sm shadow-slate-200/40 ring-1 ring-slate-100/80 dark:border-slate-700/70 dark:bg-slate-900/75 dark:shadow-none dark:ring-white/[0.04]',
+    muted:
+      'rounded-2xl border border-slate-200/80 bg-slate-50/80 shadow-none dark:border-slate-700 dark:bg-slate-800/50',
+    yellow:
+      'rounded-2xl border border-amber-200/90 bg-amber-50/90 shadow-sm dark:border-amber-900/40 dark:bg-amber-950/30',
+    blue:
+      'rounded-2xl border border-blue-200/90 bg-blue-50/80 shadow-sm dark:border-blue-900/40 dark:bg-blue-950/30',
+    green:
+      'rounded-2xl border border-emerald-200/90 bg-emerald-50/80 shadow-sm dark:border-emerald-900/40 dark:bg-emerald-950/30',
+    orange:
+      'rounded-2xl border border-orange-200/90 bg-orange-50/80 shadow-sm dark:border-orange-900/40 dark:bg-orange-950/30',
+    pink:
+      'rounded-2xl border border-pink-200/90 bg-pink-50/80 shadow-sm dark:border-pink-900/40 dark:bg-pink-950/30',
   }
 
   return (
-    <div className={`
-      ${variants[variant]}
-      ${hover ? 'hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-4px] hover:translate-y-[-4px]' : ''}
-      transition-all duration-200
+    <div
+      className={`
+      ${variants[variant] || variants.default}
+      ${hover ? 'transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-300/50 dark:hover:shadow-lg dark:hover:shadow-black/30' : ''}
       ${className}
-    `}>
+    `}
+    >
       {children}
     </div>
   )

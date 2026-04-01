@@ -11,7 +11,9 @@ import {
   RefreshCw,
   AlertTriangle
 } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import api from '../../../services/api'
 import toast from 'react-hot-toast'
@@ -103,54 +105,40 @@ const LpsReports = () => {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-lps-600"></div>
-      </div>
-    )
+    return <PageLoading app="lps" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Laporan LPS</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Analisis dan laporan produksi selesai</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="lps"
+        eyebrow="Analitik"
+        title="Laporan LPS"
+        description="Grafik, ringkasan angka, filter periode, dan export Excel / PDF."
+      >
         <div className="flex flex-wrap gap-2">
           <Button
             app="lps"
             variant="secondary"
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center"
+            className="gap-2 rounded-xl"
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Memperbarui...' : 'Refresh'}
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} strokeWidth={2} />
+            {refreshing ? 'Memperbarui…' : 'Refresh'}
           </Button>
-          <Button
-            app="lps"
-            variant="primary"
-            onClick={() => handleExport('excel')}
-            className="flex items-center"
-          >
-            <Download className="w-4 h-4 mr-2" />
+          <Button app="lps" variant="primary" onClick={() => handleExport('excel')} className="gap-2 rounded-xl shadow-lg shadow-lps-600/20">
+            <Download className="h-4 w-4" strokeWidth={2} />
             Export Excel
           </Button>
-          <Button
-            variant="danger"
-            onClick={() => handleExport('pdf')}
-            className="flex items-center"
-          >
-            <Download className="w-4 h-4 mr-2" />
+          <Button app="lps" variant="danger" onClick={() => handleExport('pdf')} className="gap-2 rounded-xl">
+            <Download className="h-4 w-4" strokeWidth={2} />
             Export PDF
           </Button>
         </div>
-      </div>
+      </AppPageHero>
 
-      {/* Filters */}
-      <Card className="p-6">
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex items-center space-x-2">
             <Filter className="w-5 h-5 text-gray-500 dark:text-slate-400" />
@@ -205,7 +193,7 @@ const LpsReports = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card hover className="p-6">
+        <Card hover className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
           <div className="flex items-center">
             <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
               <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -219,7 +207,7 @@ const LpsReports = () => {
           </div>
         </Card>
 
-        <Card hover className="p-6">
+        <Card hover className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
           <div className="flex items-center">
             <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl">
               <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
@@ -233,7 +221,7 @@ const LpsReports = () => {
           </div>
         </Card>
 
-        <Card hover className="p-6">
+        <Card hover className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
           <div className="flex items-center">
             <div className="p-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl">
               <TrendingUp className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
@@ -247,7 +235,7 @@ const LpsReports = () => {
           </div>
         </Card>
 
-        <Card hover className="p-6">
+        <Card hover className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
           <div className="flex items-center">
             <div className="p-3 bg-lps-100 dark:bg-lps-900/30 rounded-xl">
               <TrendingDown className="w-6 h-6 text-lps-600 dark:text-lps-400" />
@@ -265,8 +253,8 @@ const LpsReports = () => {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Bar Chart - LPS per Status */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
+        <Card className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">LPS per Status</h3>
             <BarChart3 className="w-5 h-5 text-gray-500 dark:text-slate-400" />
           </div>
@@ -283,8 +271,8 @@ const LpsReports = () => {
         </Card>
 
         {/* Line Chart - Trend LPS */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
+        <Card className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Trend LPS</h3>
             <TrendingUp className="w-5 h-5 text-gray-500 dark:text-slate-400" />
           </div>
@@ -304,8 +292,8 @@ const LpsReports = () => {
       {/* Pie Chart & Table */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pie Chart - Distribusi per Customer */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
+        <Card className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Distribusi per Customer</h3>
             <FileText className="w-5 h-5 text-gray-500 dark:text-slate-400" />
           </div>
@@ -331,11 +319,11 @@ const LpsReports = () => {
         </Card>
 
         {/* Top Items Table */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top 10 Item Terbanyak</h3>
+        <Card className="p-6 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+          <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Top 10 Item Terbanyak</h3>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-              <thead className="bg-gray-50 dark:bg-slate-800">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-gradient-to-r from-slate-50 to-slate-100/90 dark:from-slate-800 dark:to-slate-800/95">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                     Nama Item
@@ -348,9 +336,9 @@ const LpsReports = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+              <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900/50">
                 {reports.topItems?.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <tr key={index} className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/60">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                       {item.nama_item}
                     </td>

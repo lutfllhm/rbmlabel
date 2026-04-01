@@ -232,7 +232,7 @@ router.get('/finish', async (req, res, next) => {
   }
 });
 
-// Mark LPS as finished
+// Mark LPS as finished (with auto-create stock label masuk)
 router.post('/finish', async (req, res, next) => {
   try {
     const { lps_id, tanggal_finish } = req.body;
@@ -252,6 +252,18 @@ router.post('/finish', async (req, res, next) => {
         throw new Error('LPS already marked as finished');
       }
 
+      // Get LPS details
+      const [lpsData] = await connection.execute(
+        'SELECT * FROM lps WHERE id = ?',
+        [lps_id]
+      );
+
+      if (lpsData.length === 0) {
+        throw new Error('LPS not found');
+      }
+
+      const lps = lpsData[0];
+
       // Insert lps_label_finish record
       const [finishResult] = await connection.execute(`
         INSERT INTO lps_label_finish (lps_id, tanggal_finish, verified_by)
@@ -264,9 +276,51 @@ router.post('/finish', async (req, res, next) => {
         ['finish', lps_id]
       );
 
+      // AUTO-CREATE STOCK LABEL MASUK (Integration!)
+      const [stockMasukResult] = await connection.execute(`
+        INSERT INTO stok_label_masuk (
+          tanggal, no_spk, no_lps, part_number, nama_item, jumlah_order, customer
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `, [
+        tanggal_finish,
+        lps.no_spk || '',
+        lps.no_lps,
+        lps.part_number,
+        lps.nama_item,
+        `${lps.jumlah_pcs} PCS`,
+        lps.customer || ''
+      ]);
+
+      // Update or create stok_label
+      const [existingStock] = await connection.execute(
+        'SELECT * FROM stok_label WHERE part_number = ?',
+        [lps.part_number]
+      );
+
+      if (existingStock.length > 0) {
+        // Update existing stock
+        await connection.execute(
+          'UPDATE stok_label SET jumlah_roll = jumlah_roll + ? WHERE part_number = ?',
+          [lps.papercore_pcs, lps.part_number]
+        );
+      } else {
+        // Create new stock entry
+        await connection.execute(`
+          INSERT INTO stok_label (part_number, nama_item, ukuran, finishing, isi, jumlah_roll)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `, [
+          lps.part_number,
+          lps.nama_item,
+          lps.papercore_size || '',
+          '',
+          0,
+          lps.papercore_pcs
+        ]);
+      }
+
       await connection.commit();
 
-      // Broadcast update
+      // Broadcast updates
       req.io.emit('lps_finished', {
         lps_id,
         finish_id: finishResult.insertId,
@@ -274,10 +328,24 @@ router.post('/finish', async (req, res, next) => {
         verified_by: req.user.full_name
       });
 
+      req.io.emit('stock_label_auto_created', {
+        stock_masuk_id: stockMasukResult.insertId,
+        no_lps: lps.no_lps,
+        part_number: lps.part_number,
+        nama_item: lps.nama_item,
+        source: 'lps_finish'
+      });
+
       res.json({ 
         success: true, 
         id: finishResult.insertId,
-        message: 'LPS marked as finished successfully' 
+        stock_masuk_id: stockMasukResult.insertId,
+        message: 'LPS marked as finished and stock label created successfully',
+        integration: {
+          stock_created: true,
+          no_lps: lps.no_lps,
+          part_number: lps.part_number
+        }
       });
     } catch (error) {
       await connection.rollback();
@@ -411,3 +479,155 @@ router.get('/users', requireRole(['admin']), async (req, res, next) => {
 });
 
 module.exports = router;
+
+// ============================================
+// INTEGRATION ENDPOINTS
+// ============================================
+
+// Get SPK details for LPS
+router.get('/:id/spk-details', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get LPS
+    const [lps] = await pool.execute(
+      'SELECT * FROM lps WHERE id = ?',
+      [id]
+    );
+
+    if (lps.length === 0) {
+      return res.status(404).json({ error: 'LPS not found' });
+    }
+
+    if (!lps[0].no_spk) {
+      return res.json({
+        lps: lps[0],
+        spk: null,
+        has_spk: false
+      });
+    }
+
+    // Get SPK details
+    const [spk] = await pool.execute(`
+      SELECT 
+        s.*,
+        m.nama_material, m.ukuran as material_ukuran, m.supplier,
+        l.nama_item as label_nama
+      FROM material_spk s
+      LEFT JOIN material_stock m ON s.material_id = m.id
+      LEFT JOIN material_label_list l ON s.label_id = l.id
+      WHERE s.no_spk = ?
+    `, [lps[0].no_spk]);
+
+    res.json({
+      lps: lps[0],
+      spk: spk[0] || null,
+      has_spk: spk.length > 0
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get stock status for LPS
+router.get('/:id/stock-status', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get LPS
+    const [lps] = await pool.execute(
+      'SELECT * FROM lps WHERE id = ?',
+      [id]
+    );
+
+    if (lps.length === 0) {
+      return res.status(404).json({ error: 'LPS not found' });
+    }
+
+    // Check if in stock label masuk
+    const [stockMasuk] = await pool.execute(
+      'SELECT * FROM stok_label_masuk WHERE no_lps = ? ORDER BY created_at DESC',
+      [lps[0].no_lps]
+    );
+
+    // Check current stock
+    const [currentStock] = await pool.execute(
+      'SELECT * FROM stok_label WHERE part_number = ?',
+      [lps[0].part_number]
+    );
+
+    res.json({
+      lps: lps[0],
+      in_stock: stockMasuk.length > 0,
+      stock_entries: stockMasuk,
+      current_stock: currentStock[0] || null
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get full integration data for LPS
+router.get('/:id/full', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get LPS with finish details
+    const [lps] = await pool.execute(`
+      SELECT 
+        l.*,
+        lf.tanggal_finish,
+        u.full_name as verified_by_name
+      FROM lps l
+      LEFT JOIN lps_label_finish lf ON l.id = lf.lps_id
+      LEFT JOIN users u ON lf.verified_by = u.id
+      WHERE l.id = ?
+    `, [id]);
+
+    if (lps.length === 0) {
+      return res.status(404).json({ error: 'LPS not found' });
+    }
+
+    const lpsData = lps[0];
+
+    // Get SPK if exists
+    let spkData = null;
+    if (lpsData.no_spk) {
+      const [spk] = await pool.execute(`
+        SELECT 
+          s.*,
+          m.nama_material, m.ukuran as material_ukuran, m.supplier
+        FROM material_spk s
+        LEFT JOIN material_stock m ON s.material_id = m.id
+        WHERE s.no_spk = ?
+      `, [lpsData.no_spk]);
+      spkData = spk[0] || null;
+    }
+
+    // Get stock label masuk
+    const [stockMasuk] = await pool.execute(
+      'SELECT * FROM stok_label_masuk WHERE no_lps = ? ORDER BY created_at DESC',
+      [lpsData.no_lps]
+    );
+
+    // Get current stock
+    const [currentStock] = await pool.execute(
+      'SELECT * FROM stok_label WHERE part_number = ?',
+      [lpsData.part_number]
+    );
+
+    res.json({
+      lps: lpsData,
+      spk: spkData,
+      stock_masuk: stockMasuk,
+      current_stock: currentStock[0] || null,
+      integration_status: {
+        has_spk: spkData !== null,
+        in_stock: stockMasuk.length > 0,
+        stock_available: currentStock.length > 0
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});

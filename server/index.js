@@ -15,6 +15,7 @@ const stoklabelRoutes = require('./routes/stoklabel');
 const lpsRoutes = require('./routes/lps');
 const publicRoutes = require('./routes/public');
 const webhookRoutes = require('./routes/webhooks');
+const integrationRoutes = require('./routes/integration');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { authenticateToken } = require('./middleware/auth');
@@ -106,6 +107,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/public', publicRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/debug', require('./routes/debug')); // Debug routes
+app.use('/api/integration', integrationRoutes); // Integration routes (cross-app)
 app.use('/api/material', authenticateToken, materialRoutes);
 app.use('/api/stoklabel', authenticateToken, stoklabelRoutes);
 app.use('/api/lps', authenticateToken, lpsRoutes);

@@ -410,3 +410,159 @@ router.get('/users', requireRole(['admin']), async (req, res, next) => {
 });
 
 module.exports = router;
+
+// ============================================
+// INTEGRATION ENDPOINTS
+// ============================================
+
+// Get LPS status for a specific SPK
+router.get('/spk/:id/lps-status', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get SPK details
+    const [spk] = await pool.execute(
+      'SELECT * FROM material_spk WHERE id = ?',
+      [id]
+    );
+
+    if (spk.length === 0) {
+      return res.status(404).json({ error: 'SPK not found' });
+    }
+
+    // Get related LPS
+    const [lps] = await pool.execute(
+      'SELECT * FROM lps WHERE no_spk = ? ORDER BY created_at DESC',
+      [spk[0].no_spk]
+    );
+
+    res.json({
+      spk: spk[0],
+      lps: lps,
+      has_lps: lps.length > 0,
+      lps_finished: lps.some(l => l.status === 'finish'),
+      lps_pending: lps.some(l => l.status === 'pending')
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Create LPS from SPK
+router.post('/spk/:id/create-lps', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { tanggal, papercore_pcs, papercore_size } = req.body;
+
+    // Get SPK details
+    const [spk] = await pool.execute(
+      'SELECT * FROM material_spk WHERE id = ?',
+      [id]
+    );
+
+    if (spk.length === 0) {
+      return res.status(404).json({ error: 'SPK not found' });
+    }
+
+    const spkData = spk[0];
+
+    // Generate LPS number
+    const [lastLps] = await pool.execute(
+      'SELECT no_lps FROM lps ORDER BY id DESC LIMIT 1'
+    );
+    
+    let lpsNumber;
+    if (lastLps.length > 0) {
+      const lastNumber = parseInt(lastLps[0].no_lps.split('-')[1]);
+      lpsNumber = `LPS-${String(lastNumber + 1).padStart(5, '0')}`;
+    } else {
+      lpsNumber = 'LPS-00001';
+    }
+
+    // Create LPS
+    const [result] = await pool.execute(`
+      INSERT INTO lps (
+        tanggal, no_lps, papercore_pcs, papercore_size, nama_item,
+        customer, part_number, no_spk, po, jumlah_pcs, material, status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+    `, [
+      tanggal,
+      lpsNumber,
+      papercore_pcs,
+      papercore_size,
+      spkData.nama_item,
+      spkData.customer || '',
+      spkData.part_number,
+      spkData.no_spk,
+      '', // PO can be added later
+      spkData.jumlah_cetak_pcs,
+      spkData.nama_item // Using nama_item as material reference
+    ]);
+
+    // Broadcast notification
+    req.io.emit('lps_created_from_spk', {
+      lps_id: result.insertId,
+      no_lps: lpsNumber,
+      no_spk: spkData.no_spk,
+      nama_item: spkData.nama_item
+    });
+
+    res.json({
+      success: true,
+      lps_id: result.insertId,
+      no_lps: lpsNumber,
+      message: 'LPS created successfully from SPK'
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Get SPK with full integration data
+router.get('/spk/:id/full', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    // Get SPK with material and label details
+    const [spk] = await pool.execute(`
+      SELECT 
+        s.*,
+        m.nama_material, m.ukuran as material_ukuran, m.supplier, m.jumlah_roll as material_stock,
+        l.nama_item as label_nama, l.ukuran as label_ukuran
+      FROM material_spk s
+      LEFT JOIN material_stock m ON s.material_id = m.id
+      LEFT JOIN material_label_list l ON s.label_id = l.id
+      WHERE s.id = ?
+    `, [id]);
+
+    if (spk.length === 0) {
+      return res.status(404).json({ error: 'SPK not found' });
+    }
+
+    // Get related LPS
+    const [lps] = await pool.execute(
+      'SELECT * FROM lps WHERE no_spk = ? ORDER BY created_at DESC',
+      [spk[0].no_spk]
+    );
+
+    // Get stock label masuk
+    const [stockMasuk] = await pool.execute(
+      'SELECT * FROM stok_label_masuk WHERE no_spk = ? ORDER BY created_at DESC',
+      [spk[0].no_spk]
+    );
+
+    res.json({
+      spk: spk[0],
+      lps: lps,
+      stock_masuk: stockMasuk,
+      integration_status: {
+        has_lps: lps.length > 0,
+        lps_finished: lps.filter(l => l.status === 'finish').length,
+        lps_pending: lps.filter(l => l.status === 'pending').length,
+        in_stock: stockMasuk.length > 0
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});

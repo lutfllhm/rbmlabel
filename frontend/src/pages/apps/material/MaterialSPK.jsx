@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Plus, Search, FileText, Package, RefreshCw } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Input from '../../../components/ui/Input'
 import api from '../../../services/api'
@@ -148,52 +150,39 @@ const MaterialSPK = () => {
   }, [materials])
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-material-600 dark:border-material-400" />
-      </div>
-    )
+    return <PageLoading app="material" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">SPK Management</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">
-            Kelola Surat Perintah Kerja dan tarik stok material
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            app="material"
-            variant="secondary"
-            type="button"
-            onClick={() => loadData()}
-            className="flex items-center"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Muat ulang
-          </Button>
-          <Button
-            app="material"
-            variant="primary"
-            type="button"
-            onClick={() => {
-              setFormData(emptyForm())
-              setSelectedLabelId('')
-              suggestNoSpk()
-              setShowModal(true)
-            }}
-            className="flex items-center"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Buat SPK
-          </Button>
-        </div>
-      </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="material"
+        eyebrow="Produksi"
+        title="SPK — Surat Perintah Kerja"
+        description="Kelola SPK, hubungkan ke stok material, dan pantau order per customer."
+      >
+        <Button app="material" variant="secondary" type="button" onClick={() => loadData()} className="gap-2 rounded-xl">
+          <RefreshCw className="h-4 w-4" strokeWidth={2} />
+          Muat ulang
+        </Button>
+        <Button
+          app="material"
+          variant="primary"
+          type="button"
+          onClick={() => {
+            setFormData(emptyForm())
+            setSelectedLabelId('')
+            suggestNoSpk()
+            setShowModal(true)
+          }}
+          className="gap-2 rounded-xl shadow-lg shadow-material-600/15"
+        >
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Buat SPK
+        </Button>
+      </AppPageHero>
 
-      <Card className="p-6">
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 h-4 w-4" />
           <input
@@ -206,10 +195,10 @@ const MaterialSPK = () => {
         </div>
       </Card>
 
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/25 dark:ring-white/[0.04]">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead className="bg-gray-50 dark:bg-slate-800">
+          <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+            <thead className="bg-gradient-to-r from-slate-50 to-slate-100/90 dark:from-slate-800 dark:to-slate-800/95">
               <tr>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase">
                   No SPK
@@ -234,11 +223,11 @@ const MaterialSPK = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900/50">
               {filtered.map((row) => {
                 const mat = row.material_id != null ? materialById[row.material_id] : null
                 return (
-                  <tr key={row.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/80">
+                  <tr key={row.id} className="hover:bg-slate-50/90 dark:hover:bg-slate-800/60">
                     <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                       {row.no_spk}
                     </td>
@@ -297,13 +286,13 @@ const MaterialSPK = () => {
           {/* Sama lebar dengan area main: max-w-7xl + padding seperti ModernLayout */}
           <div className="flex min-h-full w-full items-start justify-center px-4 py-8 md:px-6 md:py-10 lg:px-8">
             <div className="w-full max-w-7xl">
-            <Card className="relative my-auto flex w-full flex-col shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-              <div className="flex shrink-0 items-center justify-between gap-4 border-b-4 border-black bg-white px-5 pt-5 pb-4 dark:bg-slate-800 sm:px-6 sm:pt-6">
+            <Card className="relative my-auto flex w-full flex-col shadow-xl dark:shadow-black/20">
+              <div className="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 bg-slate-50/80 px-5 pt-5 pb-4 dark:border-slate-800 dark:bg-slate-800/50 sm:px-6 sm:pt-6">
                 <h3
                   id="spk-modal-title"
-                  className="pr-2 text-xl font-black uppercase tracking-tight text-black dark:text-white sm:text-2xl"
+                  className="pr-2 text-lg font-semibold tracking-tight text-slate-900 dark:text-white sm:text-xl"
                 >
-                  Buat SPK Baru
+                  Buat SPK baru
                 </h3>
                 <button
                   type="button"
@@ -312,7 +301,7 @@ const MaterialSPK = () => {
                     setFormData(emptyForm())
                     setSelectedLabelId('')
                   }}
-                  className="shrink-0 border-4 border-black bg-yellow-300 px-3 py-1.5 text-sm font-black uppercase text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:bg-yellow-400"
+                  className="shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                   aria-label="Tutup"
                 >
                   Tutup
@@ -338,13 +327,13 @@ const MaterialSPK = () => {
 
                 {labels.length > 0 && (
                   <div>
-                    <label className="mb-2 block text-sm font-black uppercase text-black dark:text-white">
+                    <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
                       Isi dari daftar label (opsional)
                     </label>
                     <select
                       value={selectedLabelId}
                       onChange={(e) => onPickLabel(e.target.value)}
-                      className="w-full border-4 border-black bg-white px-4 py-3 font-bold text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:bg-slate-800 dark:text-white"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm focus:border-material-500 focus:outline-none focus:ring-2 focus:ring-material-500/20 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                     >
                       <option value="">— manual —</option>
                       {labels.map((l) => (
@@ -443,15 +432,15 @@ const MaterialSPK = () => {
                 />
 
                 <div>
-                  <label className="mb-2 flex items-center gap-2 text-sm font-black uppercase text-black dark:text-white">
-                    <Package className="h-4 w-4 shrink-0" strokeWidth={3} />
+                  <label className="mb-1.5 flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <Package className="h-4 w-4 shrink-0" strokeWidth={2} />
                     Material (stok) <span className="text-red-500">*</span>
                   </label>
                   <select
                     required
                     value={formData.material_id}
                     onChange={(e) => setFormData({ ...formData, material_id: e.target.value })}
-                    className="w-full border-4 border-black bg-white px-4 py-3 font-bold text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:bg-slate-800 dark:text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm focus:border-material-500 focus:outline-none focus:ring-2 focus:ring-material-500/20 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                   >
                     <option value="">Pilih roll material</option>
                     {materials.map((m) => (
@@ -468,7 +457,7 @@ const MaterialSPK = () => {
                 </div>
                 </div>
 
-                <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t-4 border-black bg-gradient-to-r from-yellow-100 to-pink-100 px-5 py-4 dark:from-slate-800 dark:to-slate-800 sm:px-6">
+                <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-slate-200 bg-slate-50/80 px-5 py-4 dark:border-slate-800 dark:bg-slate-900/50 sm:px-6">
                   <Button
                     type="button"
                     app="material"

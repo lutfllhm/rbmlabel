@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Package, Search, Filter } from 'lucide-react'
+import { Plus, Edit, Trash2, Package, Search } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Badge from '../../../components/ui/Badge'
 import Input from '../../../components/ui/Input'
@@ -135,21 +137,17 @@ const MaterialStock = () => {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-material-600"></div>
-      </div>
-    )
+    return <PageLoading app="material" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Material Stock</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Kelola stok material produksi</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="material"
+        eyebrow="Stok"
+        title="Material Stock"
+        description="Kelola stok material produksi — cari, filter kategori, dan kelola roll."
+      >
         <Button
           app="material"
           variant="primary"
@@ -158,31 +156,33 @@ const MaterialStock = () => {
             resetForm()
             setShowModal(true)
           }}
-          className="flex items-center"
+          className="gap-2 rounded-xl shadow-lg shadow-material-600/15"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-4 w-4" strokeWidth={2} />
           Tambah Material
         </Button>
-      </div>
+      </AppPageHero>
 
-      {/* Filters */}
-      <Card className="p-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-500 h-4 w-4" />
-              <input
-                type="text"
-                placeholder="Cari material..."
-                className="w-full pl-12 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="flex-1 space-y-2">
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Cari Material
+            </label>
+            <input
+              type="text"
+              placeholder="Cari material..."
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm transition-all placeholder:text-slate-400 hover:border-slate-300 focus:border-material-500 focus:outline-none focus:ring-2 focus:ring-material-500/20 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-500 dark:focus:border-material-400"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-          <div className="sm:w-48">
+          <div className="space-y-2 sm:w-48">
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Kategori
+            </label>
             <select
-              className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-material-500 dark:focus:ring-material-400 focus:border-transparent transition-all duration-200"
+              className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-3 pr-10 text-sm text-slate-900 shadow-sm transition-all hover:border-slate-300 focus:border-material-500 focus:outline-none focus:ring-2 focus:ring-material-500/20 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-500 dark:focus:border-material-400"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
             >
@@ -197,38 +197,37 @@ const MaterialStock = () => {
         </div>
       </Card>
 
-      {/* Materials Table */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/25 dark:ring-white/[0.04]">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead className="bg-gray-50 dark:bg-slate-800">
+          <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+            <thead className="bg-gradient-to-r from-slate-50 to-slate-100/90 dark:from-slate-800 dark:to-slate-800/95">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Material
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   PO / Tanggal
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Kategori
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Supplier
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Stok
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Total Roll
                 </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                <th className="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                   Aksi
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900/50">
               {filteredMaterials.map((material) => (
-                <tr key={material.id} className="hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors">
+                <tr key={material.id} className="transition-colors hover:bg-slate-50/90 dark:hover:bg-slate-800/60">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 bg-material-100 dark:bg-material-900/20 rounded-lg flex items-center justify-center mr-3">
@@ -309,15 +308,15 @@ const MaterialStock = () => {
         <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
           <div className="flex min-h-full w-full items-start justify-center px-4 py-8 md:px-6 md:py-10 lg:px-8">
             <div className="w-full max-w-7xl">
-            <Card className="relative my-auto flex w-full flex-col shadow-[12px_12px_0px_0px_rgba(0,0,0,1)]">
-              <div className="flex shrink-0 items-center justify-between gap-4 border-b-4 border-black bg-white px-5 pt-5 pb-4 dark:bg-slate-800 sm:px-6 sm:pt-6">
-                <h3 className="pr-2 text-xl font-black uppercase tracking-tight text-black dark:text-white sm:text-2xl">
-                  {editingMaterial ? 'Edit Material' : 'Tambah Material Baru'}
+            <Card className="relative my-auto flex w-full flex-col shadow-xl dark:shadow-black/20">
+              <div className="flex shrink-0 items-center justify-between gap-4 border-b border-slate-200 bg-slate-50/80 px-5 pt-5 pb-4 dark:border-slate-800 dark:bg-slate-800/50 sm:px-6 sm:pt-6">
+                <h3 className="pr-2 text-lg font-semibold tracking-tight text-slate-900 dark:text-white sm:text-xl">
+                  {editingMaterial ? 'Edit material' : 'Tambah material baru'}
                 </h3>
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="shrink-0 border-4 border-black bg-yellow-300 px-3 py-1.5 text-sm font-black uppercase text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:bg-yellow-400"
+                  className="shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
                   Tutup
                 </button>
@@ -366,12 +365,12 @@ const MaterialStock = () => {
 
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 [&>*]:min-w-0">
                   <div className="min-w-0">
-                    <label className="mb-2 block text-sm font-black uppercase text-black dark:text-white">
+                    <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
                       Kategori <span className="text-red-500">*</span>
                     </label>
                     <select
                       required
-                      className="w-full border-4 border-black bg-white px-4 py-3 font-bold text-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus:outline-none focus:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:bg-slate-800 dark:text-white"
+                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm focus:border-material-500 focus:outline-none focus:ring-2 focus:ring-material-500/20 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
                       value={formData.kategori_id}
                       onChange={(e) => setFormData({...formData, kategori_id: e.target.value})}
                     >
@@ -406,7 +405,7 @@ const MaterialStock = () => {
                 />
                 </div>
 
-                <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t-4 border-black bg-gradient-to-r from-yellow-100 to-pink-100 px-5 py-4 dark:from-slate-800 dark:to-slate-800 sm:px-6">
+                <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-slate-200 bg-slate-50/80 px-5 py-4 dark:border-slate-800 dark:bg-slate-900/50 sm:px-6">
                   <Button
                     type="button"
                     app="material"

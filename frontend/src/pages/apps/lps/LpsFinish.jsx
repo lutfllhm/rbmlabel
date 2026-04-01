@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react'
-import { 
-  CheckCircle, 
-  Clock, 
-  Search,
-  Calendar,
-  User,
-  Package
-} from 'lucide-react'
+import { CheckCircle, Clock, Search, Calendar, User, Package } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
+import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Input from '../../../components/ui/Input'
 import api from '../../../services/api'
@@ -94,50 +90,46 @@ const LpsFinish = () => {
   })
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-lps-600"></div>
-      </div>
-    )
+    return <PageLoading app="lps" />
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Finish LPS</h1>
-          <p className="text-gray-600 dark:text-slate-400">Tandai LPS sebagai selesai produksi</p>
+    <div className="space-y-8">
+      <AppPageHero
+        app="lps"
+        eyebrow="Penyelesaian"
+        title="Finish LPS"
+        description="Tandai order yang sudah selesai diproduksi — pastikan nama petugas terisi."
+      >
+        <div className="flex items-center gap-2 rounded-2xl border border-slate-200/90 bg-white/80 px-4 py-2.5 text-sm text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-300">
+          <Clock className="h-4 w-4 text-amber-500" strokeWidth={2} />
+          <span>
+            <strong className="tabular-nums text-slate-900 dark:text-white">{filteredLps.length}</strong> menunggu
+          </span>
         </div>
-        <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-slate-400">
-          <Clock className="w-4 h-4" />
-          <span>{filteredLps.length} LPS menunggu penyelesaian</span>
-        </div>
-      </div>
+      </AppPageHero>
 
-      {/* Search */}
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-lg shadow border border-gray-200 dark:border-slate-700">
-        <div className="flex items-center space-x-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-500 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Cari berdasarkan No LPS, Item, atau Customer..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-2 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-lps-500 dark:focus:ring-lps-400 focus:border-transparent transition-all duration-200"
-              />
-            </div>
-          </div>
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={2} />
+          <input
+            type="text"
+            placeholder="Cari No LPS, item, atau customer…"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-3 pl-11 pr-4 text-sm text-slate-900 shadow-inner focus:border-lps-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-lps-500/20 dark:border-slate-600 dark:bg-slate-900/60 dark:text-white dark:focus:bg-slate-900"
+          />
         </div>
-      </div>
+      </Card>
 
-      {/* LPS Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {filteredLps.length > 0 ? (
           filteredLps.map((lps) => (
-            <div key={lps.id} className="bg-white dark:bg-slate-800 rounded-lg shadow hover:shadow-md transition-shadow border border-gray-200 dark:border-slate-700">
+            <Card
+              key={lps.id}
+              hover
+              className="overflow-hidden border-slate-200/90 shadow-md shadow-slate-200/20 dark:border-slate-700 dark:shadow-black/20"
+            >
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -188,17 +180,17 @@ const LpsFinish = () => {
                   Tandai Selesai
                 </button>
               </div>
-            </div>
+            </Card>
           ))
         ) : (
           <div className="col-span-full">
-            <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700">
+            <Card className="py-12 text-center shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
               <CheckCircle className="mx-auto h-12 w-12 text-gray-400 dark:text-slate-600" />
               <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">Tidak ada LPS pending</h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
                 Semua LPS sudah selesai atau belum ada LPS yang dibuat.
               </p>
-            </div>
+            </Card>
           </div>
         )}
       </div>

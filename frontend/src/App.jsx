@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { useThemeStore } from './stores/themeStore'
+import { useNotificationStore } from './stores/notificationStore'
 import { useEffect } from 'react'
 
 // Pages
@@ -82,12 +83,28 @@ const getPageTitle = (pathname) => {
 function App() {
   const { user, checkAuth, isLoading } = useAuthStore()
   const { initTheme } = useThemeStore()
+  const { initializeSocket, disconnectSocket } = useNotificationStore()
   const location = useLocation()
 
   useEffect(() => {
     checkAuth()
     initTheme() // Initialize theme on app load
   }, [checkAuth, initTheme])
+
+  // Initialize Socket.io when user is authenticated
+  useEffect(() => {
+    if (user?.id && user?.app) {
+      console.log('🔌 Initializing Socket.io for user:', user.id)
+      initializeSocket(user.id, user.app)
+    }
+
+    // Cleanup on unmount or user logout
+    return () => {
+      if (user) {
+        disconnectSocket()
+      }
+    }
+  }, [user?.id, user?.app, initializeSocket, disconnectSocket])
 
   useEffect(() => {
     document.title = getPageTitle(location.pathname)

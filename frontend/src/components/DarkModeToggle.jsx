@@ -6,31 +6,19 @@ const DarkModeToggle = () => {
 
   return (
     <button
+      type="button"
       onClick={toggleDarkMode}
-      className="relative p-3 border-4 border-black bg-white dark:bg-slate-800 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all rotate-3 hover:rotate-6"
-      title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
+      className="rounded-xl border border-slate-200 bg-white p-2 text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+      title={isDarkMode ? 'Mode terang' : 'Mode gelap'}
     >
-      <div className="relative w-6 h-6">
-        {/* Sun Icon */}
-        <Sun
-          className={`absolute inset-0 h-6 w-6 text-yellow-500 transition-all duration-300 ${
-            isDarkMode
-              ? 'rotate-90 scale-0 opacity-0'
-              : 'rotate-0 scale-100 opacity-100'
-          }`}
-          strokeWidth={3}
-        />
-        
-        {/* Moon Icon */}
-        <Moon
-          className={`absolute inset-0 h-6 w-6 text-blue-400 transition-all duration-300 ${
-            isDarkMode
-              ? 'rotate-0 scale-100 opacity-100'
-              : '-rotate-90 scale-0 opacity-0'
-          }`}
-          strokeWidth={3}
-        />
-      </div>
+      <Sun
+        className={`h-5 w-5 text-amber-500 transition-all ${isDarkMode ? 'hidden' : 'block'}`}
+        strokeWidth={2}
+      />
+      <Moon
+        className={`h-5 w-5 text-slate-300 transition-all ${isDarkMode ? 'block' : 'hidden'}`}
+        strokeWidth={2}
+      />
     </button>
   )
 }

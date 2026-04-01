@@ -1,20 +1,15 @@
 import { useState, useEffect } from 'react'
-import { 
-  Save, 
-  Settings as SettingsIcon,
-  Bell,
-  Database,
-  Shield,
-  Mail,
-  CheckCircle
-} from 'lucide-react'
+import { Save, Settings as SettingsIcon, Bell, Database, Shield, CheckCircle } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Input from '../../../components/ui/Input'
 import api from '../../../services/api'
 import toast from 'react-hot-toast'
 
 const MaterialSettings = () => {
+  const [initialLoad, setInitialLoad] = useState(true)
   const [loading, setLoading] = useState(false)
   const [settings, setSettings] = useState({
     // General Settings
@@ -50,6 +45,8 @@ const MaterialSettings = () => {
       }
     } catch (error) {
       console.error('Failed to fetch settings:', error)
+    } finally {
+      setInitialLoad(false)
     }
   }
 
@@ -73,62 +70,62 @@ const MaterialSettings = () => {
     }))
   }
 
+  const fieldClass =
+    'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm focus:border-material-500 focus:outline-none focus:ring-2 focus:ring-material-500/20 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100'
+
+  if (initialLoad) {
+    return <PageLoading app="material" label="Memuat pengaturan…" />
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div className="bg-white dark:bg-slate-800 border-4 border-black p-6 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] rotate-1">
-          <h1 className="text-3xl font-black uppercase text-black dark:text-white">Pengaturan</h1>
-          <p className="text-base font-bold text-black/70 dark:text-white/70 mt-1">Konfigurasi aplikasi Material Management</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="material"
+        eyebrow="Sistem"
+        title="Pengaturan Material"
+        description="Konfigurasi umum, notifikasi, keamanan, dan cadangan data untuk modul Material."
+      >
         <Button
           app="material"
           variant="primary"
           onClick={handleSave}
           disabled={loading}
-          className="flex items-center px-6 py-3 bg-blue-400 text-black font-black uppercase border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 transition-all"
+          className="gap-2 rounded-xl shadow-lg shadow-material-600/15"
         >
           {loading ? (
-            <div className="animate-spin rounded-full h-5 w-5 border-4 border-black border-t-transparent mr-2"></div>
+            <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
           ) : (
-            <Save className="w-5 h-5 mr-2" strokeWidth={3} />
+            <Save className="h-4 w-4" strokeWidth={2} />
           )}
-          {loading ? 'Menyimpan...' : 'Simpan Pengaturan'}
+          {loading ? 'Menyimpan…' : 'Simpan pengaturan'}
         </Button>
-      </div>
+      </AppPageHero>
 
-      {/* General Settings */}
-      <div className="bg-white dark:bg-slate-800 border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] -rotate-1">
-        <div className="p-6 border-b-4 border-black bg-yellow-300 dark:bg-slate-700">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-black border-2 border-black flex items-center justify-center mr-3">
-              <SettingsIcon className="w-5 h-5 text-white" strokeWidth={3} />
-            </div>
-            <h2 className="text-2xl font-black uppercase text-black dark:text-white">Pengaturan Umum</h2>
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+        <div className="flex items-center gap-3 border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white px-6 py-4 dark:border-slate-800 dark:from-slate-800/40 dark:to-slate-900/40">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+            <SettingsIcon className="h-5 w-5" strokeWidth={2} />
           </div>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Pengaturan umum</h2>
         </div>
-        <div className="p-6 space-y-4">
+        <div className="space-y-4 p-6">
           <div>
-            <label className="block text-sm font-black uppercase text-black dark:text-white mb-2">
-              Nama Aplikasi
-            </label>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Nama aplikasi</label>
             <input
               type="text"
               value={settings.app_name}
               onChange={(e) => handleChange('app_name', e.target.value)}
-              className="w-full px-4 py-3 bg-white dark:bg-slate-700 border-4 border-black text-black dark:text-white font-bold focus:outline-none"
+              className={fieldClass}
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-black uppercase text-black dark:text-white mb-2">
-                Item per Halaman
-              </label>
+              <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Item per halaman</label>
               <select
                 value={settings.items_per_page}
                 onChange={(e) => handleChange('items_per_page', parseInt(e.target.value))}
-                className="w-full px-4 py-3 bg-white dark:bg-slate-700 border-4 border-black text-black dark:text-white font-bold focus:outline-none"
+                className={fieldClass}
               >
                 <option value={10}>10</option>
                 <option value={25}>25</option>
@@ -138,13 +135,11 @@ const MaterialSettings = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-black uppercase text-black dark:text-white mb-2">
-                Format Tanggal
-              </label>
+              <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Format tanggal</label>
               <select
                 value={settings.date_format}
                 onChange={(e) => handleChange('date_format', e.target.value)}
-                className="w-full px-4 py-3 bg-white dark:bg-slate-700 border-4 border-black text-black dark:text-white font-bold focus:outline-none"
+                className={fieldClass}
               >
                 <option value="dd/MM/yyyy">DD/MM/YYYY</option>
                 <option value="MM/dd/yyyy">MM/DD/YYYY</option>
@@ -153,11 +148,11 @@ const MaterialSettings = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Notification Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+        <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white p-6 dark:border-slate-700 dark:from-slate-800/40 dark:to-slate-900/40">
           <div className="flex items-center">
             <Bell className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Notifikasi</h2>
@@ -215,10 +210,10 @@ const MaterialSettings = () => {
       </Card>
 
       {/* Security Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+        <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white p-6 dark:border-slate-700 dark:from-slate-800/40 dark:to-slate-900/40">
           <div className="flex items-center">
-            <Shield className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
+            <Shield className="mr-2 h-5 w-5 text-slate-500 dark:text-slate-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Keamanan</h2>
           </div>
         </div>
@@ -260,10 +255,10 @@ const MaterialSettings = () => {
       </Card>
 
       {/* Database Settings */}
-      <Card>
-        <div className="p-6 border-b border-gray-200 dark:border-slate-700">
+      <Card className="overflow-hidden shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04]">
+        <div className="border-b border-slate-200 bg-gradient-to-r from-slate-50/90 to-white p-6 dark:border-slate-700 dark:from-slate-800/40 dark:to-slate-900/40">
           <div className="flex items-center">
-            <Database className="w-5 h-5 text-gray-500 dark:text-slate-400 mr-2" />
+            <Database className="mr-2 h-5 w-5 text-slate-500 dark:text-slate-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Database</h2>
           </div>
         </div>

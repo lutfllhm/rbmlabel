@@ -81,41 +81,54 @@ const Navbar = () => {
     window.location.href = '/'
   }
 
+  const getAppGradient = (app) => {
+    switch (app) {
+      case 'material':
+        return 'from-sky-500 to-blue-600'
+      case 'stoklabel':
+        return 'from-emerald-500 to-teal-600'
+      case 'lps':
+        return 'from-violet-500 to-purple-600'
+      default:
+        return 'from-sky-500 to-blue-600'
+    }
+  }
+
+  const appGradient = getAppGradient(user?.app)
+
   return (
-    <nav className="bg-gradient-to-r from-white via-yellow-100 to-pink-100 dark:from-slate-800 dark:via-slate-800 dark:to-slate-700 border-b-8 border-black fixed w-full top-0 z-50 shadow-[0_8px_0px_0px_rgba(0,0,0,1)]">
-      <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+    <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/80 backdrop-blur-xl shadow-sm dark:border-slate-800/80 dark:bg-slate-900/80">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
           {/* Left side */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 bg-black text-white border-2 border-black hover:bg-gray-800 mr-3"
+              className="md:hidden rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
             >
               {mobileMenuOpen ? (
-                <X className="h-5 w-5" strokeWidth={3} />
+                <X className="h-5 w-5" strokeWidth={2} />
               ) : (
-                <Menu className="h-5 w-5" strokeWidth={3} />
+                <Menu className="h-5 w-5" strokeWidth={2} />
               )}
             </button>
 
-            <Link to="/" className="flex items-center group">
-              <div className="flex-shrink-0 flex items-center">
-                <div className={`p-3 ${appColor} border-4 border-black mr-3 -rotate-6 group-hover:rotate-6 transition-transform shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]`}>
-                  <AppIcon className="h-6 w-6 text-black" strokeWidth={3} />
-                </div>
-                <div>
-                  <h1 className="text-lg font-black uppercase text-black dark:text-white tracking-tight">
-                    {getAppName(user?.app)}
-                  </h1>
-                  <p className="text-xs font-bold text-black/70 dark:text-white/70 hidden sm:block">RBM SYSTEM V1.0</p>
-                </div>
+            <Link to="/" className="group flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg dark:bg-white">
+                <img src="/img/rbm.png" alt="RBM" className="h-5 w-5 object-contain" style={{ filter: 'brightness(0) saturate(100%) invert(17%) sepia(95%) saturate(7471%) hue-rotate(2deg) brightness(98%) contrast(118%)' }} />
+              </div>
+              <div className="hidden sm:block">
+                <h1 className="text-base font-semibold tracking-tight text-slate-900 dark:text-white">
+                  {getAppName(user?.app)}
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400">RBM System</p>
               </div>
             </Link>
           </div>
 
           {/* Right side */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-2">
             {/* Notifications */}
             <NotificationBell />
 
@@ -123,45 +136,47 @@ const Navbar = () => {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-2 sm:space-x-3 p-2 border-4 border-black bg-white dark:bg-slate-700 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] transition-all rotate-1"
+                className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow dark:border-slate-700 dark:bg-slate-800 dark:hover:border-slate-600"
               >
-                <div className={`w-8 h-8 ${appColor} border-3 border-black flex items-center justify-center -rotate-12`}>
-                  <User className="h-4 w-4 text-black" strokeWidth={3} />
+                <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br ${appGradient}`}>
+                  <User className="h-4 w-4 text-white" strokeWidth={2} />
                 </div>
-                <div className="hidden md:block text-left">
-                  <p className="text-sm font-black text-black dark:text-white">{user?.full_name || user?.username}</p>
-                  <p className="text-xs font-bold text-black/70 dark:text-white/70 uppercase">{user?.role}</p>
+                <div className="hidden text-left md:block">
+                  <p className="text-sm font-semibold text-slate-900 dark:text-white">{user?.full_name || user?.username}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{user?.role}</p>
                 </div>
-                <ChevronDown className="h-4 w-4 text-black dark:text-white hidden sm:block" strokeWidth={3} />
+                <ChevronDown className="hidden h-4 w-4 text-slate-400 sm:block" strokeWidth={2} />
               </button>
 
               {/* Dropdown menu */}
               {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 border-4 border-black shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] z-50 -rotate-1">
-                  <div className="px-4 py-3 border-b-4 border-black bg-gradient-to-r from-yellow-300 to-pink-300 dark:from-slate-700 dark:to-slate-600">
-                    <p className="text-sm font-black text-black dark:text-white">{user?.full_name || user?.username}</p>
-                    <p className="text-xs font-bold text-black/70 dark:text-white/70">{user?.email}</p>
-                    <p className="text-xs font-bold text-black/70 dark:text-white/70 mt-1 uppercase">
+                <div className="absolute right-0 mt-2 w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                  <div className={`bg-gradient-to-br ${appGradient} px-4 py-4`}>
+                    <p className="font-semibold text-white">{user?.full_name || user?.username}</p>
+                    <p className="text-sm text-white/80">{user?.email}</p>
+                    <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/20 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
                       {user?.role} • {getAppName(user?.app)}
-                    </p>
+                    </div>
                   </div>
                   
-                  <Link
-                    to={`/apps/${user?.app}/settings`}
-                    className="flex items-center px-4 py-3 text-sm font-bold text-black dark:text-white hover:bg-blue-300 dark:hover:bg-slate-700 transition-colors border-b-4 border-black"
-                    onClick={() => setShowUserMenu(false)}
-                  >
-                    <Settings className="h-5 w-5 mr-3 text-black dark:text-white" strokeWidth={3} />
-                    Pengaturan
-                  </Link>
-                  
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-3 text-sm font-black text-white bg-red-500 hover:bg-red-600 transition-colors"
-                  >
-                    <LogOut className="h-5 w-5 mr-3" strokeWidth={3} />
-                    Keluar
-                  </button>
+                  <div className="p-1">
+                    <Link
+                      to={`/apps/${user?.app}/settings`}
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-700"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      <Settings className="h-4 w-4" strokeWidth={2} />
+                      Pengaturan
+                    </Link>
+                    
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                    >
+                      <LogOut className="h-4 w-4" strokeWidth={2} />
+                      Keluar
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -171,18 +186,18 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t-4 border-black bg-white dark:bg-slate-800">
-          <div className="px-4 py-3 space-y-2">
+        <div className="border-t border-slate-200 bg-white md:hidden dark:border-slate-800 dark:bg-slate-900">
+          <div className="space-y-1 px-4 py-3">
             <Link
               to={`/apps/${user?.app}/dashboard`}
-              className="block px-3 py-2 border-2 border-black text-sm font-bold text-black dark:text-white hover:bg-yellow-300 dark:hover:bg-slate-700"
+              className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
               onClick={() => setMobileMenuOpen(false)}
             >
               Dashboard
             </Link>
             <Link
               to={`/apps/${user?.app}/settings`}
-              className="block px-3 py-2 border-2 border-black text-sm font-bold text-black dark:text-white hover:bg-yellow-300 dark:hover:bg-slate-700"
+              className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
               onClick={() => setMobileMenuOpen(false)}
             >
               Pengaturan

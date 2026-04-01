@@ -10,10 +10,13 @@ import {
   CheckCircle,
   XCircle
 } from 'lucide-react'
+import AppPageHero from '../../../components/layout/AppPageHero'
 import Card from '../../../components/ui/Card'
+import PageLoading from '../../../components/ui/PageLoading'
 import Button from '../../../components/ui/Button'
 import Badge from '../../../components/ui/Badge'
 import Input from '../../../components/ui/Input'
+import Modal from '../../../components/ui/Modal'
 import api from '../../../services/api'
 import toast from 'react-hot-toast'
 
@@ -119,51 +122,45 @@ const LpsUsers = () => {
   )
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-lps-600"></div>
-      </div>
-    )
+    return <PageLoading app="lps" />
   }
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Manajemen Pengguna</h1>
-          <p className="text-gray-600 dark:text-slate-400 mt-1">Kelola pengguna aplikasi LPS</p>
-        </div>
+    <div className="space-y-8">
+      <AppPageHero
+        app="lps"
+        eyebrow="Tim"
+        title="Manajemen pengguna"
+        description="Kelola akun untuk modul LPS — peran dan status aktif."
+      >
         <Button
           app="lps"
           variant="primary"
           onClick={() => openModal('create')}
-          className="flex items-center"
+          className="gap-2 rounded-xl shadow-lg shadow-lps-600/25"
         >
-          <Plus className="w-4 h-4 mr-2" />
-          Tambah Pengguna
+          <Plus className="h-4 w-4" strokeWidth={2} />
+          Tambah pengguna
         </Button>
-      </div>
+      </AppPageHero>
 
-      {/* Search */}
-      <Card className="p-6">
+      <Card className="p-5 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/20 dark:ring-white/[0.04] sm:p-6">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-slate-500 w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-gray-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="Cari berdasarkan username atau email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-lps-500 dark:focus:ring-lps-400 focus:border-transparent transition-all duration-200"
+            className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-12 pr-4 text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-lps-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:ring-lps-400"
           />
         </div>
       </Card>
 
-      {/* Users Table */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden p-0 shadow-md shadow-slate-200/25 ring-1 ring-slate-100/80 dark:shadow-black/25 dark:ring-white/[0.04]">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead className="bg-gray-50 dark:bg-slate-800">
+          <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+            <thead className="bg-gradient-to-r from-slate-50 to-slate-100/90 dark:from-slate-800 dark:to-slate-800/95">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                   Username
@@ -182,9 +179,9 @@ const LpsUsers = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-700">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900/50">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors duration-150">
+                <tr key={user.id} className="transition-colors duration-150 hover:bg-slate-50/90 dark:hover:bg-slate-800/60">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <User className="h-4 w-4 text-gray-400 dark:text-slate-500 mr-2" />
@@ -253,28 +250,16 @@ const LpsUsers = () => {
         )}
       </Card>
 
-      {/* Create/Edit Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {modalMode === 'create' ? 'Tambah Pengguna Baru' : 'Edit Pengguna'}
-              </h2>
-              <button
-                onClick={() => {
-                  setShowModal(false)
-                  resetForm()
-                }}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
+      <Modal
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false)
+          resetForm()
+        }}
+        title={modalMode === 'create' ? 'Tambah pengguna baru' : 'Edit pengguna'}
+        size="sm"
+      >
+        <form onSubmit={handleSubmit} className="space-y-5">
               <Input
                 label="Username"
                 type="text"
@@ -318,7 +303,7 @@ const LpsUsers = () => {
                 </select>
               </div>
 
-              <div className="flex items-center p-4 bg-gray-50 dark:bg-slate-900/50 rounded-lg">
+              <div className="flex items-center rounded-xl border border-slate-200/80 bg-slate-50/90 p-4 dark:border-slate-700 dark:bg-slate-800/40">
                 <input
                   type="checkbox"
                   id="is_active"
@@ -331,9 +316,10 @@ const LpsUsers = () => {
                 </label>
               </div>
 
-              <div className="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
+              <div className="flex justify-end gap-3 border-t border-slate-200 pt-6 dark:border-slate-700">
                 <Button
                   type="button"
+                  app="lps"
                   variant="secondary"
                   onClick={() => {
                     setShowModal(false)
@@ -347,50 +333,45 @@ const LpsUsers = () => {
                   app="lps"
                   variant="primary"
                 >
-                  {modalMode === 'create' ? 'Tambah Pengguna' : 'Update Pengguna'}
+                  {modalMode === 'create' ? 'Tambah pengguna' : 'Perbarui pengguna'}
                 </Button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+      </Modal>
 
-      {/* Delete Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-slate-800 rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto p-6 border border-gray-200 dark:border-slate-700">
-            <div className="flex items-center mb-6">
-              <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                <Trash2 className="h-6 w-6 text-red-600 dark:text-red-400" />
-              </div>
-              <h3 className="ml-4 text-xl font-bold text-gray-900 dark:text-white">
-                Hapus Pengguna
-              </h3>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-slate-400 mb-6">
-              Apakah Anda yakin ingin menghapus pengguna <strong className="text-gray-900 dark:text-white">{selectedUser?.username}</strong>? 
-              Tindakan ini tidak dapat dibatalkan.
-            </p>
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setShowDeleteModal(false)
-                  setSelectedUser(null)
-                }}
-              >
-                Batal
-              </Button>
-              <Button
-                variant="danger"
-                onClick={handleDelete}
-              >
-                Hapus Pengguna
-              </Button>
-            </div>
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false)
+          setSelectedUser(null)
+        }}
+        title="Hapus pengguna"
+        size="sm"
+      >
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/35">
+            <Trash2 className="h-5 w-5 text-red-600 dark:text-red-400" strokeWidth={2} />
           </div>
+          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            Hapus <strong className="text-slate-900 dark:text-white">{selectedUser?.username}</strong>? Tindakan ini tidak dapat dibatalkan.
+          </p>
         </div>
-      )}
+        <div className="flex justify-end gap-3">
+          <Button
+            app="lps"
+            variant="secondary"
+            onClick={() => {
+              setShowDeleteModal(false)
+              setSelectedUser(null)
+            }}
+          >
+            Batal
+          </Button>
+          <Button app="lps" variant="danger" onClick={handleDelete}>
+            Hapus
+          </Button>
+        </div>
+      </Modal>
     </div>
   )
 }
