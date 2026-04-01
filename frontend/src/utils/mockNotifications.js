@@ -8,7 +8,9 @@ export const mockNotifications = [
     message: 'Material ABC123 stok tersisa 5 roll',
     type: 'warning',
     read: false,
-    created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString() // 5 minutes ago
+    created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString(), // 5 minutes ago
+    path: '/apps/material/stock',
+    app: 'material'
   },
   {
     id: 2,
@@ -16,7 +18,9 @@ export const mockNotifications = [
     message: 'SPK-20240128-001 telah dibuat untuk customer XYZ',
     type: 'success',
     read: false,
-    created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString() // 30 minutes ago
+    created_at: new Date(Date.now() - 30 * 60 * 1000).toISOString(), // 30 minutes ago
+    path: '/apps/material/spk',
+    app: 'material'
   },
   {
     id: 3,
@@ -24,7 +28,9 @@ export const mockNotifications = [
     message: '100 roll label telah keluar untuk pengiriman',
     type: 'info',
     read: true,
-    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString() // 2 hours ago
+    created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+    path: '/apps/stoklabel/keluar',
+    app: 'stoklabel'
   },
   {
     id: 4,
@@ -32,7 +38,9 @@ export const mockNotifications = [
     message: 'LPS-20240128-001 telah selesai diproduksi',
     type: 'success',
     read: true,
-    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() // 1 day ago
+    created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+    path: '/apps/lps/list',
+    app: 'lps'
   }
 ]
 

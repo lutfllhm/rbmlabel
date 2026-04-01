@@ -15,6 +15,43 @@ export const useNotificationStore = create(
       lastFetch: null,
       showDropdown: false,
       socketConnected: false,
+      currentApp: null,
+
+      // Toast preferences (persisted)
+      toastEnabled: true,
+      mutedToastTypes: [], // array of 'info' | 'success' | 'warning' | 'error'
+      mutedToastApps: [], // array of app keys, e.g. 'material' | 'stoklabel' | 'lps'
+      toggleToastEnabled: () => set((s) => ({ toastEnabled: !s.toastEnabled })),
+      toggleMutedToastType: (type) =>
+        set((s) => ({
+          mutedToastTypes: s.mutedToastTypes.includes(type) ? s.mutedToastTypes.filter((t) => t !== type) : [...s.mutedToastTypes, type]
+        })),
+      toggleMutedToastApp: (app) =>
+        set((s) => ({
+          mutedToastApps: s.mutedToastApps.includes(app) ? s.mutedToastApps.filter((a) => a !== app) : [...s.mutedToastApps, app]
+        })),
+
+      removeNotificationLocal: (notificationId) => {
+        const { notifications } = get()
+        const updatedNotifications = notifications.filter((n) => n.id !== notificationId)
+        set({
+          notifications: updatedNotifications,
+          unreadCount: updatedNotifications.filter((n) => !n.read).length
+        })
+      },
+      restoreNotificationLocal: (notification, index = 0) => {
+        const { notifications } = get()
+        const safeIndex = Math.max(0, Math.min(index, notifications.length))
+        const updatedNotifications = [
+          ...notifications.slice(0, safeIndex),
+          notification,
+          ...notifications.slice(safeIndex)
+        ]
+        set({
+          notifications: updatedNotifications,
+          unreadCount: updatedNotifications.filter((n) => !n.read).length
+        })
+      },
 
       // Initialize Socket.io connection
       initializeSocket: (userId, app) => {
@@ -22,6 +59,8 @@ export const useNotificationStore = create(
           // Get token from localStorage
           const token = localStorage.getItem('token')
           if (!token) return
+
+          set({ currentApp: app || null })
 
           // Connect to socket
           socketService.connect(token)
@@ -45,10 +84,20 @@ export const useNotificationStore = create(
             })
 
             // Show toast notification
-            toast.success(notification.title, {
-              duration: 4000,
-              icon: '🔔'
-            })
+            const state = get()
+            const notifType = (notification?.type || 'info').toString()
+            const notifApp = (notification?.app || state.currentApp || '').toString()
+            const shouldToast =
+              state.toastEnabled &&
+              !state.mutedToastTypes.includes(notifType) &&
+              (!notifApp || !state.mutedToastApps.includes(notifApp))
+
+            if (shouldToast) {
+              toast.success(notification.title, {
+                duration: 4000,
+                icon: '🔔'
+              })
+            }
           })
 
           // Listen for notification updates
@@ -87,7 +136,7 @@ export const useNotificationStore = create(
       // Disconnect socket
       disconnectSocket: () => {
         socketService.disconnect()
-        set({ socketConnected: false })
+        set({ socketConnected: false, currentApp: null })
       },
 
       // Toggle dropdown visibility
@@ -217,7 +266,6 @@ export const useNotificationStore = create(
 
         if (useMockData) {
           // Handle mock data locally
-          const deletedNotif = notifications.find(n => n.id === notificationId)
           const updatedNotifications = notifications.filter(n => n.id !== notificationId)
           set({
             notifications: updatedNotifications,
@@ -228,7 +276,6 @@ export const useNotificationStore = create(
 
         try {
           await api.delete(`/notifications/${notificationId}`)
-          const deletedNotif = notifications.find(n => n.id === notificationId)
           const updatedNotifications = notifications.filter(n => n.id !== notificationId)
           set({
             notifications: updatedNotifications,
@@ -279,7 +326,10 @@ export const useNotificationStore = create(
         notifications: state.notifications,
         unreadCount: state.unreadCount,
         useMockData: state.useMockData,
-        lastFetch: state.lastFetch
+        lastFetch: state.lastFetch,
+        toastEnabled: state.toastEnabled,
+        mutedToastTypes: state.mutedToastTypes,
+        mutedToastApps: state.mutedToastApps
       })
     }
   )
